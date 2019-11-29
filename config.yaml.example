@@ -2,3 +2,6 @@ keys:
   amadeus_key: CHANGEME
   amadeus_secret: CHANGEME
   open_weather: CHANGEME
+screen_size:
+  height: 480
+  width: 800
