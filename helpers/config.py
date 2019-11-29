@@ -4,8 +4,20 @@ from functools import lru_cache
 CONFIG_FILE_PATH = 'config.yaml'
 
 
+def get_weather_key():
+    return  _get_config().get('keys', {}).get('open_weather')
+
+
+def get_resort_coordinates(resort_name):
+    """ returns (latitude, longitude) of the named resort"""
+    resorts = get_resorts()
+    resort = resorts.get(resort_name, {})
+    return resort.get('latitude'), resort.get('longitude')
+
+
+@lru_cache(maxsize=4)
 def get_resorts():
-    return _get_config().get('resorts', [])
+    return _get_config().get('resorts', {})
 
 
 def get_origin_zipcode():
