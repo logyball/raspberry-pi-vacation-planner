@@ -17,6 +17,7 @@ class WeatherBar(QWidget):
 
     def initUI(self):
         self.layout = QHBoxLayout()
+        self.layout.setContentsMargins(0, 0, 0, 0)
         self.left_icon = QWidget()
         self.left_icon.setMinimumWidth(int(get_width() * 0.15))
         self.right_temp = QWidget()
@@ -40,11 +41,12 @@ class LeftSidebar(QWidget):
 
     def initUI(self):
         self.layout = QVBoxLayout()
+        self.layout.setContentsMargins(0, 0, 0, 0)
         self.top_weather_bar = WeatherBar(parent=self)
         self.middle_snow_report = QWidget(parent=self)
         self.bottom_weather_forecast = QWidget(parent=self)
-        self.top_weather_bar.setMinimumHeight(int(get_height() * 0.15))
-        self.middle_snow_report.setMinimumHeight(int(get_height() * 0.3))
+        self.top_weather_bar.setMinimumHeight(int(get_height() * 0.25))
+        self.middle_snow_report.setMinimumHeight(int(get_height() * 0.30))
         self.middle_snow_report.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.bottom_weather_forecast.setMinimumHeight(int(get_height() * 0.4))
         for w in (self.middle_snow_report, self.bottom_weather_forecast):

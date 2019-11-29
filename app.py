@@ -19,16 +19,17 @@ class MainWindow(QMainWindow):
         self.initUI()
 
     def initUI(self):
-        tb = TopBar(parent=self)
-        tb.setMinimumHeight(int(get_height() * 0.08))
-        tb.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        # tb = TopBar(parent=self)
+        # tb.setFixedHeight(int(get_height() * 0.05))
         mb = MiddleBar(parent=self)
+        mb.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        mb.setFixedHeight(int(get_height() * 0.94))
         bb = BottomBar(parent=self)
-        bb.setMinimumHeight(int(get_height() * 0.08))
-        bb.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.layout.addWidget(tb, alignment=Qt.AlignTop)
-        self.layout.addWidget(mb, alignment=Qt.AlignCenter)
+        bb.setFixedHeight(int(get_height() * 0.05))
+        # self.layout.addWidget(tb, alignment=Qt.AlignTop)
+        self.layout.addWidget(mb, alignment=Qt.AlignVCenter)
         self.layout.addWidget(bb, alignment=Qt.AlignBottom)
+        self.layout.setContentsMargins(0, 0, 0, 0)
         self.central_widget.setLayout(self.layout)
 
     def _setup(self, height, width):

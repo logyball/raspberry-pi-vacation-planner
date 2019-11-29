@@ -19,11 +19,12 @@ class BottomBar(QWidget):
 
     def initUI(self):
         self.layout = QHBoxLayout()
+        self.layout.setContentsMargins(0, 0, 0, 0)
         self.left = QWidget()
         self.middle = QWidget()
         self.right = QWidget()
         self.left.setMinimumWidth(int(get_width() * 0.05))
-        self.middle.setMinimumWidth(int(get_width() * 0.8))
+        self.middle.setMinimumWidth(int(get_width() * 0.89))
         self.middle.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.right.setMinimumWidth(int(get_width() * 0.05))
         for w in (self.left, self.middle, self.right):
@@ -45,6 +46,7 @@ class MiddleBar(QWidget):
 
     def initUI(self):
         self.layout = QHBoxLayout()
+        self.layout.setContentsMargins(0, 0, 0, 0)
         self.left = left_sidebar.LeftSidebar(parent=self)
         self.right = right_sidebar.ResortInfo(parent=self)
         self.left.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -67,6 +69,7 @@ class TopBar(QWidget):
 
     def initUI(self):
         self.layout = QHBoxLayout()
+        self.layout.setContentsMargins(0, 0, 0, 0)
         self.left = QWidget()
         self.left.setMinimumWidth(int(get_width() * 0.3))
         self.middle = QWidget()

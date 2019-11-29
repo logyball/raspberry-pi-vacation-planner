@@ -19,6 +19,7 @@ class TravelInfo(QWidget):
         self.left_travel_time = QWidget()
         self.right_hotel_info = QWidget()
         self.layout = QHBoxLayout()
+        self.layout.setContentsMargins(0,0,0,0)
         self.set_sizes()
         self.set_positions()
         for w in (self.left_travel_time, self.right_hotel_info):
@@ -49,6 +50,7 @@ class ResortInfo(QWidget):
         self.middle_live_stream = QWidget(parent=self)
         self.bottom_travel_info = TravelInfo(parent=self)
         self.layout = QVBoxLayout()
+        self.layout.setContentsMargins(0, 0, 0, 0)
         self.set_sizes()
         self.set_positions()
         for w in (self.top_resort_name, self.middle_live_stream):
@@ -61,7 +63,7 @@ class ResortInfo(QWidget):
         self.layout.addWidget(self.bottom_travel_info, alignment=Qt.AlignBottom)
 
     def set_sizes(self):
-        self.top_resort_name.setMinimumHeight(int(get_height() * 0.12))
-        self.middle_live_stream.setMinimumHeight(int(get_height() * 0.6))
+        self.top_resort_name.setFixedHeight(int(get_height() * 0.10))
+        self.middle_live_stream.setMinimumHeight(int(get_height() * 0.65))
         self.middle_live_stream.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.bottom_travel_info.setMinimumHeight(int(get_height() * 0.12))
+        self.bottom_travel_info.setFixedHeight(int(get_height() * 0.18))
