@@ -5,3 +5,19 @@ keys:
 screen_size:
   height: 480
   width: 800
+origin:
+  airport: JFK
+  zip: 10001
+resorts:
+  - name: Killington
+    zip: '05751'
+    airport: RUT
+    stream: unknown
+  - name: Steamboat Springs
+    zip: '80487'
+    airport: HDN
+    stream: https://www.youtube.com/watch?v=KMGuAO3XIqU
+  - name: Mt Hood Meadows
+    zip: '97041'
+    airport: PDX
+    stream: https://www.skihood.com/cams/vista

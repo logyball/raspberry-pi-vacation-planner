@@ -1,0 +1,1 @@
+from amadeus import Client, ResponseError

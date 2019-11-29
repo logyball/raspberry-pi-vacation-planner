@@ -19,7 +19,7 @@ class TravelInfo(QWidget):
         self.left_travel_time = QWidget()
         self.right_hotel_info = QWidget()
         self.layout = QHBoxLayout()
-        self.layout.setContentsMargins(0,0,0,0)
+        self.layout.setContentsMargins(0, 0, 0, 0)
         self.set_sizes()
         self.set_positions()
         for w in (self.left_travel_time, self.right_hotel_info):
