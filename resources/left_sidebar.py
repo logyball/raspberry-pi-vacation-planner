@@ -4,11 +4,12 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt
 from helpers.config import get_width, get_height
 from helpers.testing_utils import set_random_background_color
+from resources.weather_widgets import CurrentTemp, CurrentIcon
 
 
 class WeatherBar(QWidget):
-    left_icon: QWidget = None
-    right_temp: QWidget = None
+    left_icon: CurrentIcon = None
+    right_temp: CurrentTemp = None
     layout: QHBoxLayout = None
 
     def __init__(self, parent=None):
@@ -18,12 +19,11 @@ class WeatherBar(QWidget):
     def initUI(self):
         self.layout = QHBoxLayout()
         self.layout.setContentsMargins(0, 0, 0, 0)
-        self.left_icon = QWidget()
-        self.left_icon.setMinimumWidth(int(get_width() * 0.15))
-        self.right_temp = QWidget()
-        self.right_temp.setMinimumWidth(int(get_width() * 0.15))
-        for w in (self.left_icon, self.right_temp):
-            set_random_background_color(w)
+        self.left_icon = CurrentIcon(parent=self)
+        self.left_icon.setFixedWidth(int(get_width() * 0.15))
+        self.left_icon.setIcon()
+        self.right_temp = CurrentTemp(parent=self)
+        self.right_temp.setFixedWidth(int(get_width() * 0.15))
         self.layout.addWidget(self.left_icon, alignment=Qt.AlignHCenter)
         self.layout.addWidget(self.right_temp, alignment=Qt.AlignHCenter)
         self.setLayout(self.layout)
@@ -45,7 +45,7 @@ class LeftSidebar(QWidget):
         self.top_weather_bar = WeatherBar(parent=self)
         self.middle_snow_report = QWidget(parent=self)
         self.bottom_weather_forecast = QWidget(parent=self)
-        self.top_weather_bar.setMinimumHeight(int(get_height() * 0.25))
+        self.top_weather_bar.setFixedHeight(int(get_height() * 0.25))
         self.middle_snow_report.setMinimumHeight(int(get_height() * 0.30))
         self.middle_snow_report.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.bottom_weather_forecast.setMinimumHeight(int(get_height() * 0.4))
