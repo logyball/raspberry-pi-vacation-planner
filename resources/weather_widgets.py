@@ -1,8 +1,7 @@
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import (
-    QWidget, QVBoxLayout, QSizePolicy, QLabel
-)
+from PyQt5.QtWidgets import QWidget, QSizePolicy, QLabel
 from PyQt5.QtCore import Qt
+from resources.BaseContainers import BaseVContainer
 from helpers.config import get_height
 
 
@@ -27,18 +26,15 @@ class CurrentIcon(QWidget):
         self.icon.setPixmap(self.pic_map)
 
 
-class CurrentTemp(QWidget):
+class CurrentTemp(BaseVContainer):
     label: QLabel = None
     temp: QLabel = None
-    layout: QVBoxLayout = None
 
     def __init__(self, parent=None, cur_temp=''):
         super(CurrentTemp, self).__init__(parent)
         self.initUI(cur_temp=cur_temp)
 
     def initUI(self, cur_temp):
-        self.layout = QVBoxLayout()
-        self.layout.setContentsMargins(0, 0, 0, 0)
         self.label = QLabel("Current Temp")
         self.temp = QLabel(cur_temp)
         self.label.setFixedHeight(int(get_height() * 0.05))
@@ -46,4 +42,3 @@ class CurrentTemp(QWidget):
         self.temp.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.layout.addWidget(self.label, alignment=Qt.AlignTop)
         self.layout.addWidget(self.temp, alignment=Qt.AlignBottom)
-        self.setLayout(self.layout)
