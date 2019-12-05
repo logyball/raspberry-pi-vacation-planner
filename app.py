@@ -3,9 +3,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt
 from sys import argv
-from resources.outer_layer import (
-    BottomBar, TopBar, MiddleBar
-)
+from resources.outer_layer import BottomBar, CentralBar
 from helpers.config import get_width, get_height
 
 
@@ -19,15 +17,12 @@ class MainWindow(QMainWindow):
         self.initUI()
 
     def initUI(self):
-        # tb = TopBar(parent=self)
-        # tb.setFixedHeight(int(get_height() * 0.05))
-        mb = MiddleBar(parent=self)
-        mb.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        mb.setFixedHeight(int(get_height() * 0.94))
+        cb = CentralBar(parent=self)
+        cb.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        cb.setFixedHeight(int(get_height() * 0.94))
         bb = BottomBar(parent=self)
         bb.setFixedHeight(int(get_height() * 0.05))
-        # self.layout.addWidget(tb, alignment=Qt.AlignTop)
-        self.layout.addWidget(mb, alignment=Qt.AlignVCenter)
+        self.layout.addWidget(cb, alignment=Qt.AlignVCenter)
         self.layout.addWidget(bb, alignment=Qt.AlignBottom)
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.central_widget.setLayout(self.layout)

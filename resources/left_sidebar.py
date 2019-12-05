@@ -4,22 +4,19 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt
 from helpers.weather import get_weather_info
 from helpers.config import get_width, get_height
-from helpers.testing_utils import set_random_background_color
 from resources.weather_widgets import CurrentTemp, CurrentIcon
+from resources.BaseContainers import BaseVContainer, BaseHContainer
 
 
-class WeatherBar(QWidget):
+class WeatherBar(BaseHContainer):
     left_icon: CurrentIcon = None
     right_temp: CurrentTemp = None
-    layout: QHBoxLayout = None
 
     def __init__(self, parent=None, todays_weather={}):
         super(WeatherBar, self).__init__(parent)
         self.initUI(todays_weather=todays_weather)
 
     def initUI(self, todays_weather):
-        self.layout = QHBoxLayout()
-        self.layout.setContentsMargins(0, 0, 0, 0)
         self.left_icon = CurrentIcon(parent=self, weather_icon_path=todays_weather.get("icon"))
         self.left_icon.setFixedWidth(int(get_width() * 0.15))
         self.left_icon.setIcon()
@@ -27,14 +24,12 @@ class WeatherBar(QWidget):
         self.right_temp.setFixedWidth(int(get_width() * 0.15))
         self.layout.addWidget(self.left_icon, alignment=Qt.AlignHCenter)
         self.layout.addWidget(self.right_temp, alignment=Qt.AlignHCenter)
-        self.setLayout(self.layout)
 
 
-class LeftSidebar(QWidget):
+class LeftSidebar(BaseVContainer):
     top_weather_bar: WeatherBar = None
     middle_snow_report: QLabel = None
     bottom_weather_forecast: QWidget = None
-    layout: QVBoxLayout = None
 
     def __init__(self, parent=None, resort="killington"):
         super(LeftSidebar, self).__init__(parent)
@@ -42,8 +37,6 @@ class LeftSidebar(QWidget):
         self.initUI(weather_info=weather_info)
 
     def initUI(self, weather_info):
-        self.layout = QVBoxLayout()
-        self.layout.setContentsMargins(0, 0, 0, 0)
         self.top_weather_bar = WeatherBar(parent=self, todays_weather=weather_info.get('today'))
         self.middle_snow_report = QLabel(weather_info.get("today").get("details"), parent=self)
         self.middle_snow_report.setWordWrap(True)
@@ -55,4 +48,3 @@ class LeftSidebar(QWidget):
         self.layout.addWidget(self.top_weather_bar, alignment=Qt.AlignTop)
         self.layout.addWidget(self.middle_snow_report, alignment=Qt.AlignVCenter)
         self.layout.addWidget(self.bottom_weather_forecast, alignment=Qt.AlignBottom)
-        self.setLayout(self.layout)

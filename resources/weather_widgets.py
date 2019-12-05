@@ -1,9 +1,9 @@
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QSizePolicy, QLabel
+    QWidget, QVBoxLayout, QSizePolicy, QLabel
 )
 from PyQt5.QtCore import Qt
-from helpers.config import get_width, get_height
+from helpers.config import get_height
 
 
 class CurrentIcon(QWidget):
