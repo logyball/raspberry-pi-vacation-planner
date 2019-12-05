@@ -1,4 +1,4 @@
-from helpers.config import get_resort_coordinates
+from helpers.config import get_resort_coordinates, get_weather_url
 from datetime import datetime, timezone
 from requests import get
 from shutil import copyfileobj
@@ -6,7 +6,7 @@ from pathlib import Path
 from os.path import sep
 from os import getcwd
 from re import sub
-BASE_WEATHER_URL = "https://api.weather.gov/points/"
+BASE_WEATHER_URL = get_weather_url()
 
 
 def get_weather_info(resort_name, num_days=5):

@@ -4,8 +4,8 @@ from functools import lru_cache
 CONFIG_FILE_PATH = 'config.yaml'
 
 
-def get_weather_key():
-    return  _get_config().get('keys', {}).get('open_weather')
+def get_weather_url():
+    return _get_config().get('base_weather_url', '')
 
 
 def get_resort_coordinates(resort_name):
