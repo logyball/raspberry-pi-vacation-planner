@@ -6,6 +6,7 @@ from pathlib import Path
 from os.path import sep
 from os import getcwd
 from re import sub
+import dateutil.parser
 BASE_WEATHER_URL = get_weather_url()
 
 
@@ -50,6 +51,7 @@ def _get_forecast(weather_periods, num_days):
     for forecast in weather_periods:
         if bool(forecast.get("isDaytime")):
             forecasts.append({
+                "date": _get_date(forecast),
                 "temp": _get_temp(forecast),
                 "forecast": forecast.get("shortForecast"),
                 "day": forecast.get("name"),
@@ -66,6 +68,10 @@ def _get_temp(details):
 
 def _get_wind(details):
     return ''.join([details.get('windSpeed'), " ", details.get('windDirection')])
+
+
+def _get_date(details):
+    return dateutil.parser.parse(details.get("startTime")).date().strftime("%m/%d")
 
 
 def _get_icon_path(icon_url):
