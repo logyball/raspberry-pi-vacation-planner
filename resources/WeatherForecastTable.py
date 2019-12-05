@@ -19,7 +19,6 @@ class TableIcon(QWidget):
         self.icon = QLabel(self)
 
     def setIcon(self):
-        print(self.width(), self.height())
         self.pic_map = QPixmap(self.icon_path).scaled(
             self.height(),
             self.height()

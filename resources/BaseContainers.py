@@ -1,7 +1,7 @@
-from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QWidget
+from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QFrame
 
 
-class BaseVContainer(QWidget):
+class BaseVContainer(QFrame):
     layout: QVBoxLayout = None
 
     def __init__(self, parent=None):
@@ -9,9 +9,10 @@ class BaseVContainer(QWidget):
         self.layout = QVBoxLayout()
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.layout)
+        self.setFrameShape(QFrame.Box)
 
 
-class BaseHContainer(QWidget):
+class BaseHContainer(QFrame):
     layout: QHBoxLayout = None
 
     def __init__(self, parent=None):
@@ -19,3 +20,4 @@ class BaseHContainer(QWidget):
         self.layout = QHBoxLayout()
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.layout)
+        self.setFrameShape(QFrame.Box)

@@ -19,7 +19,7 @@ class MainWindow(QMainWindow):
     def initUI(self):
         cb = CentralBar(parent=self)
         cb.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        cb.setFixedHeight(int(get_height() * 0.94))
+        cb.setFixedHeight(int(get_height() * 0.95))
         bb = BottomBar(parent=self)
         bb.setFixedHeight(int(get_height() * 0.05))
         self.layout.addWidget(cb, alignment=Qt.AlignVCenter)
