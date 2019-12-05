@@ -1,27 +1,63 @@
-from helpers.config import get_weather_key, get_resort_coordinates
-from math import floor
-from os import path
-import requests
-
-API_KEY = get_weather_key()
-ICON_PATH = '.' + path.sep + 'resources' + path.sep + 'weather_icons'
+from helpers.config import get_resort_coordinates
+from datetime import datetime, timezone
+from requests import get
+BASE_WEATHER_URL = "https://api.weather.gov/points/"
 
 
-def get_weather(resort_name):
+def get_weather_info(resort_name, num_days=5):
     latitude, longitude = get_resort_coordinates(resort_name)
-    res = requests.get(f"http://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&appid={API_KEY}&units=imperial")
-    weather = res.json()
-    return weather
+    resort_gps_url = "".join([BASE_WEATHER_URL, latitude, ",", longitude])
+    res_dict = get(resort_gps_url).json()  # TODO - error handling
+    forecast_url = res_dict.get('properties', {}).get('forecast', None)
+    if forecast_url:
+        forecast = get(forecast_url).json()
+        return format_weather(forecast.get('properties', {}), num_days)
+    return "error"  # TODO raise exception
 
 
-def get_current_temp_resort(resort_name):
-    """returns the current temp (f) of the named resort"""
-    weather = get_weather(resort_name)
-    return floor(weather.get('main', {}).get('temp'))
+def format_weather(weather_info, num_days):
+    if not weather_info:
+        return "error"  # TODO raise exception
+    weather_details = {
+        "timestamp": weather_info.get("generatedAt", datetime.utcnow().replace(tzinfo=timezone.utc, microsecond=0).isoformat()),
+        'today': get_current_weather(weather_info.get('periods', [])[0]),
+        'forecast': get_forecast(weather_info.get('periods', [])[1:], num_days)
+    }
+    return weather_details
 
 
-def get_current_weather_icon_resort(resort_name):
-    """returns the weather icon corresponding to the named resort"""
-    weather = get_weather(resort_name)
-    icon_filename = ICON_PATH + path.sep + weather.get('weather', [{}])[0].get('icon') + '.png'
-    return icon_filename
+def get_current_weather(todays_weather):
+    if not todays_weather:
+        return "error"  # TODO raise exception
+    today_details = todays_weather
+    return {
+        "temp": get_temp(today_details),
+        "wind": get_wind(today_details),
+        "details": today_details.get("detailedForecast"),
+        "icon": today_details.get("icon")
+    }
+
+
+def get_forecast(weather_periods, num_days):
+    if not weather_periods:
+        return "error"  # TODO raise exception
+    forecasts = []
+    for forecast in weather_periods:
+        if bool(forecast.get("isDaytime")):
+            forecasts.append({
+                "temp": get_temp(forecast),
+                "forecast": forecast.get("shortForecast"),
+                "day": forecast.get("name"),
+                "icon": forecast.get("icon")
+            })
+        if len(forecasts) >= num_days:
+            break
+    return forecasts
+
+
+def get_temp(details):
+    return ''.join([str(details.get("temperature")), details.get("temperatureUnit")])
+
+
+def get_wind(details):
+    return ''.join([details.get('windSpeed'), " ", details.get('windDirection')])

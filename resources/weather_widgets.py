@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt
 from helpers.config import get_width, get_height
 from helpers.weather import get_current_temp_resort, get_current_weather_icon_resort
-
+from helpers.testing_utils import set_random_background_color
 
 class CurrentIcon(QWidget):
     pic_map: QPixmap = None
@@ -17,10 +17,11 @@ class CurrentIcon(QWidget):
 
     def initUI(self):
         self.icon = QLabel(self)
+        set_random_background_color(self)
 
     def setIcon(self):
         self.pic_map = QPixmap(
-            get_current_weather_icon_resort('hood')
+            get_current_weather_icon_resort('killington')
         ).scaled(
             self.width(),
             self.width()
@@ -43,7 +44,7 @@ class CurrentTemp(QWidget):
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.label = QLabel("Current Temp")
         self.temp = QLabel(
-            str(get_current_temp_resort('hood'))
+            str(get_current_temp_resort('killington'))
         )
         self.label.setFixedHeight(int(get_height() * 0.05))
         self.temp.setFixedHeight(int(get_height() * 0.2))
