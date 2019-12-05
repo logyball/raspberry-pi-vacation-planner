@@ -1,11 +1,10 @@
-from PyQt5.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QSizePolicy, QLabel
-)
+from PyQt5.QtWidgets import QSizePolicy, QLabel
 from PyQt5.QtCore import Qt
 from helpers.weather import get_weather_info
 from helpers.config import get_width, get_height
 from resources.weather_widgets import CurrentTemp, CurrentIcon
 from resources.BaseContainers import BaseVContainer, BaseHContainer
+from resources.WeatherForecastTable import WeatherForecastTable
 
 
 class WeatherBar(BaseHContainer):
@@ -29,7 +28,7 @@ class WeatherBar(BaseHContainer):
 class LeftSidebar(BaseVContainer):
     top_weather_bar: WeatherBar = None
     middle_snow_report: QLabel = None
-    bottom_weather_forecast: QWidget = None
+    bottom_weather_forecast: WeatherForecastTable = None
 
     def __init__(self, parent=None, resort="killington"):
         super(LeftSidebar, self).__init__(parent)
@@ -38,9 +37,9 @@ class LeftSidebar(BaseVContainer):
 
     def initUI(self, weather_info):
         self.top_weather_bar = WeatherBar(parent=self, todays_weather=weather_info.get('today'))
-        self.middle_snow_report = QLabel(weather_info.get("today").get("details"), parent=self)
+        self.middle_snow_report = QLabel(weather_info.get("today").get("details"))
         self.middle_snow_report.setWordWrap(True)
-        self.bottom_weather_forecast = QWidget(parent=self)
+        self.bottom_weather_forecast = WeatherForecastTable(parent=self, forecast=weather_info.get('forecast'))
         self.top_weather_bar.setFixedHeight(int(get_height() * 0.25))
         self.middle_snow_report.setMinimumHeight(int(get_height() * 0.30))
         self.middle_snow_report.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
