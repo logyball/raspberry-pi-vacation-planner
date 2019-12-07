@@ -23,6 +23,11 @@ def get_origin_coordinates():
     return origin.get('latitude', ''), origin.get('longitude', '')
 
 
+def get_resort_driving(resort_name):
+    resort = _get_individual_resort(resort_name)
+    return bool(resort.get('driving', False))
+
+
 def get_resort_airport_prefs(resort_name):
     resort = _get_individual_resort(resort_name)
     return resort.get('airport'), bool(resort.get('nonstop', ''))

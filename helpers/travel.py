@@ -1,7 +1,7 @@
 from amadeus import ResponseError, Client as amadeus_Client
 from helpers.config import (
     get_amadeus_keys, get_maps_key, get_resort_coordinates, get_origin_coordinates,
-    get_airlines_pref, get_origin_airport, get_resort_airport_prefs
+    get_airlines_pref, get_origin_airport, get_resort_airport_prefs, get_resort_driving
 )
 from googlemaps import Client as gmaps_Client
 from datetime import datetime, timedelta, date
@@ -9,7 +9,19 @@ from dateutil import parser as dt_parser
 from pprint import pprint
 
 
-def get_driving_to_resort_data(resort):
+def get_travel_info(resort):
+    if get_resort_driving(resort):
+        return {
+            'mode': 'driving',
+            'info': _get_driving_to_resort_data(resort)
+        }
+    return {
+        'mode': 'flying',
+        'info': _get_flying_to_resort_data(resort)
+    }
+
+
+def _get_driving_to_resort_data(resort):
     cli = _get_gmaps_client()
     resort_lat, resort_lon = get_resort_coordinates(resort)
     origin_lat, origin_lon = get_origin_coordinates()
@@ -24,10 +36,10 @@ def get_driving_to_resort_data(resort):
     }
 
 
-def get_flying_to_resort_data(resort):
+def _get_flying_to_resort_data(resort):
     prefs = _get_flight_prefs(resort)
     flights_list = _in_two_weekends_flights(prefs)
-    print(flights_list)
+    pprint(flights_list)
     return flights_list
 
 
@@ -68,7 +80,7 @@ def _get_best_flight(candidate_flights):
             continue
         best_price = total_price
         best_flight_so_far = actual_data
-    print(best_flight_so_far)
+    pprint(best_flight_so_far)
     return {
         'depart': _get_best_flight_depart_info(best_flight_so_far),
         'return': _get_best_flight_return_info(best_flight_so_far),
@@ -81,8 +93,6 @@ def _in_two_weekends_flights(prefs):
     best_flight = {}
     thursday, sunday = _get_travel_dates()
     try:
-        print(prefs)
-        print(thursday, sunday)
         flights = am_cli.shopping.flight_offers.get(
             origin=prefs.get('orig_airport'),
             destination=prefs.get('res_airpot'),
@@ -95,6 +105,7 @@ def _in_two_weekends_flights(prefs):
         best_flight = _get_best_flight(flights.data)
     except Exception as e:
         print(e)
+        return 'no flight data'
     return best_flight
 
 
