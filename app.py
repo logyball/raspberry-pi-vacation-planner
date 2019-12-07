@@ -11,35 +11,39 @@ class MainWindow(QMainWindow):
     central_widget: QWidget = None
     layout: QVBoxLayout = None
 
-    def __init__(self, parent=None, height=480, width=800):
+    def __init__(self, parent=None, height=480, width=800, resort=''):
         super(MainWindow, self).__init__(parent)
-        self._setup(height, width)
-        self.initUI()
+        self.initUI(height, width)
+        self.paintUI(resort=resort)
 
-    def initUI(self):
-        cb = CentralBar(parent=self)
+    def initUI(self, height, width):
+        self.layout = QVBoxLayout()
+        self.setFixedHeight(height)
+        self.setFixedWidth(width)
+        self.central_widget = QWidget(parent=self)
+        self.setCentralWidget(self.central_widget)
+        self.layout.setContentsMargins(0, 0, 0, 0)
+        self.central_widget.setLayout(self.layout)
+
+    def clearUI(self):
+        self.layout = QVBoxLayout()
+
+    def paintUI(self, resort=''):
+        cb = CentralBar(parent=self, resort=resort)
         cb.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         cb.setFixedHeight(int(get_height() * 0.95))
         bb = BottomBar(parent=self)
         bb.setFixedHeight(int(get_height() * 0.05))
         self.layout.addWidget(cb, alignment=Qt.AlignVCenter)
         self.layout.addWidget(bb, alignment=Qt.AlignBottom)
-        self.layout.setContentsMargins(0, 0, 0, 0)
-        self.central_widget.setLayout(self.layout)
-
-    def _setup(self, height, width):
-        self.setFixedHeight(height)
-        self.setFixedWidth(width)
-        self.central_widget = QWidget(parent=self)
-        self.setCentralWidget(self.central_widget)
-        self.layout = QVBoxLayout()
 
 
 if __name__ == '__main__':
     app = QApplication(argv)
     window = MainWindow(
         height=get_height(),
-        width=get_width()
+        width=get_width(),
+        resort="killington"
     )
     window.show()
     app.exec_()

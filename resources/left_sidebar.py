@@ -30,7 +30,7 @@ class LeftSidebar(BaseVContainer):
     middle_snow_report: QLabel = None
     bottom_weather_forecast: WeatherForecastTable = None
 
-    def __init__(self, parent=None, resort="killington"):
+    def __init__(self, parent=None, resort=""):
         super(LeftSidebar, self).__init__(parent)
         weather_info = get_weather_info(resort)
         self.initUI(weather_info=weather_info)

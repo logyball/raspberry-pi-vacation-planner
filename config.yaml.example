@@ -1,19 +1,26 @@
 keys:
   amadeus_key: CHANGEME
   amadeus_secret: CHANGEME
+  google_maps: CHANGEME
 base_weather_url: 'https://api.weather.gov/points/'
 screen_size:
   height: 480
   width: 800
 origin:
   airport: JFK
-  zip: 10001
+  latitude: CHANGEME
+  longitude: CHANGEME
+preferences:
+  airline: 'UA'
+  hotels: ''
+  hotel_star_min: 3
 resorts:
   killington:
     name: Killington
     zip: '05751'
     latitude: '43.617'
     longitude: '-72.803'
+    driving: True
     airport: RUT
     stream: unknown
   steamboat:

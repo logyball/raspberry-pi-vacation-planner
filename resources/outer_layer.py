@@ -1,9 +1,7 @@
-from PyQt5.QtWidgets import (
-    QWidget, QHBoxLayout, QSizePolicy
-)
+from PyQt5.QtWidgets import QWidget, QSizePolicy
 from PyQt5.QtCore import Qt
 from resources import left_sidebar, right_sidebar
-from resources.BaseContainers import BaseHContainer, BaseVContainer
+from resources.BaseContainers import BaseHContainer
 from helpers.testing_utils import set_random_background_color
 from helpers.config import get_width
 
@@ -36,12 +34,12 @@ class CentralBar(BaseHContainer):
     left: left_sidebar.LeftSidebar = None
     right: right_sidebar.ResortInfo = None
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, resort=''):
         super(CentralBar, self).__init__(parent)
-        self.initUI()
+        self.initUI(resort=resort)
 
-    def initUI(self):
-        self.left = left_sidebar.LeftSidebar(parent=self)
+    def initUI(self, resort=''):
+        self.left = left_sidebar.LeftSidebar(parent=self, resort=resort)
         self.right = right_sidebar.ResortInfo(parent=self)
         self.left.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.left.setMinimumWidth(int(get_width() * 0.3))
