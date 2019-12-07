@@ -51,7 +51,7 @@ def get_hotels_near_resort_data(resort):
 def _get_common_flight_info(segments):
     flight_depart_info = segments[0].get('flightSegment')
     flight_departs = flight_depart_info.get('departure').get('at')
-    flight_arrive_info = segments[::-1].get('flightSegment')
+    flight_arrive_info = segments[-1].get('flightSegment')
     flight_arrives = flight_arrive_info.get('arrival').get('at')
     flight_arrives_airport = flight_arrive_info.get('arrival').get('iataCode')
     return {
@@ -61,13 +61,13 @@ def _get_common_flight_info(segments):
     }
 
 
-def _get_best_flight_depart_info(best_flight_data):
-    segments = best_flight_data.get('services')[0].get('segments')
+def _get_best_flight_depart_info(best_flight_service_data):
+    segments = best_flight_service_data[0].get('segments')
     return _get_common_flight_info(segments)
 
 
-def _get_best_flight_return_info(best_flight_data):
-    segments = best_flight_data.get('services')[1].get('segments')
+def _get_best_flight_return_info(best_flight_service_data):
+    segments = best_flight_service_data[1].get('segments')
     return _get_common_flight_info(segments)
 
 
@@ -80,10 +80,9 @@ def _get_best_flight(candidate_flights):
             continue
         best_price = total_price
         best_flight_so_far = actual_data
-    pprint(best_flight_so_far)
     return {
-        'depart': _get_best_flight_depart_info(best_flight_so_far),
-        'return': _get_best_flight_return_info(best_flight_so_far),
+        'depart': _get_best_flight_depart_info(best_flight_so_far.get('services')),
+        'return': _get_best_flight_return_info(best_flight_so_far.get('services')),
         'price': best_price
     }
 
@@ -142,6 +141,7 @@ def _get_gmaps_client():
 def _get_amadeus_client():
     key, secret = get_amadeus_keys()
     return amadeus_Client(
+        hostname='production',
         client_id=key,
         client_secret=secret
     )

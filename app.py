@@ -39,6 +39,7 @@ class MainWindow(QMainWindow):
 
 
 if __name__ == '__main__':
+    argv.append("--disable-web-security")
     app = QApplication(argv)
     window = MainWindow(
         height=get_height(),
