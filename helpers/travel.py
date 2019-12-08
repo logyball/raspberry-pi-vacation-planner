@@ -49,16 +49,20 @@ def get_hotels_near_resort_data(resort):
 
 
 def _get_common_flight_info(segments):
-    flight_depart_info = segments[0].get('flightSegment')
-    flight_departs = flight_depart_info.get('departure').get('at')
-    flight_arrive_info = segments[-1].get('flightSegment')
-    flight_arrives = flight_arrive_info.get('arrival').get('at')
-    flight_arrives_airport = flight_arrive_info.get('arrival').get('iataCode')
-    return {
-        'departAt': flight_departs,
-        'arriveIn': flight_arrives_airport,
-        'arriveAt': flight_arrives
-    }
+    massaged_segments = []
+    for seg in segments:
+        flight_info = seg.get('flightSegment')
+        flight_departs = flight_info.get('departure').get('at')
+        flight_depart_airport = flight_info.get('departure').get('iataCode')
+        flight_arrives_airport = flight_info.get('arrival').get('iataCode')
+        flight_arrives = flight_info.get('arrival').get('at')
+        massaged_segments.append({
+            'departFrom': flight_depart_airport,
+            'departAt': flight_departs,
+            'arriveIn': flight_arrives_airport,
+            'arriveAt': flight_arrives
+        })
+    return massaged_segments
 
 
 def _get_best_flight_depart_info(best_flight_service_data):
