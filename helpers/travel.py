@@ -1,11 +1,10 @@
-from amadeus import ResponseError, Client as amadeus_Client
+from amadeus import Client as amadeus_Client
 from helpers.config import (
     get_amadeus_keys, get_maps_key, get_resort_coordinates, get_origin_coordinates,
     get_airlines_pref, get_origin_airport, get_resort_airport_prefs, get_resort_driving
 )
 from googlemaps import Client as gmaps_Client
-from datetime import datetime, timedelta, date
-from dateutil import parser as dt_parser
+from datetime import timedelta, date
 from pprint import pprint
 
 
