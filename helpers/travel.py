@@ -38,13 +38,13 @@ def _get_driving_to_resort_data(resort):
 def _get_flying_to_resort_data(resort):
     prefs = _get_flight_prefs(resort)
     flights_list = _in_two_weekends_flights(prefs)
-    pprint(flights_list)
+    pprint(flights_list)  # TODO - change to logging
     return flights_list
 
 
-def get_hotels_near_resort_data(resort):
-    resort_lat, resort_lon = get_resort_coordinates(resort)
-    origin_lat, origin_lon = get_origin_coordinates()
+# def get_hotels_near_resort_data(resort):
+#     resort_lat, resort_lon = get_resort_coordinates(resort)
+#     origin_lat, origin_lon = get_origin_coordinates()
 
 
 def _get_common_flight_info(segments):
@@ -75,7 +75,7 @@ def _get_best_flight_return_info(best_flight_service_data):
 
 
 def _get_best_flight(candidate_flights):
-    best_price = float(10000000000)
+    best_price = float(10000000000)  # TODO - better way + logging
     for flight in candidate_flights:
         actual_data = flight.get('offerItems')[0]
         total_price = float(actual_data.get('price').get('total'))
@@ -92,7 +92,6 @@ def _get_best_flight(candidate_flights):
 
 def _in_two_weekends_flights(prefs):
     am_cli = prefs.get('amadeus_cli')
-    best_flight = {}
     thursday, sunday = _get_travel_dates()
     try:
         flights = am_cli.shopping.flight_offers.get(
@@ -106,7 +105,7 @@ def _in_two_weekends_flights(prefs):
         )
         best_flight = _get_best_flight(flights.data)
     except Exception as e:
-        print(e)
+        print(e)  # TODO - logging
         return 'no flight data'
     return best_flight
 
@@ -130,21 +129,18 @@ def _get_drive_time(maps_response):
         text = maps_response[0].get('legs')[0].get('duration').get('text')
         return text
     except Exception as e:
-        print(e)
+        print(e)  # TODO - logging
         return 'unknown duration'
 
 
 def _get_gmaps_client():
-    key = get_maps_key()
-    return gmaps_Client(
-        key=key
-    )
+    return gmaps_Client(key=get_maps_key())
 
 
 def _get_amadeus_client():
     key, secret = get_amadeus_keys()
     return amadeus_Client(
-        hostname='production',
+        hostname='production',  # TODO - add switch for nonprod
         client_id=key,
         client_secret=secret
     )
@@ -172,5 +168,5 @@ def _get_travel_dates():
     else:
         this_thursday = today
     two_weeks_thursday = this_thursday + timedelta(days=14)
-    two_weeks_sunday = two_weeks_thursday + timedelta(days=3)
+    two_weeks_sunday = two_weeks_thursday + timedelta(days=3)  # TODO - logging
     return two_weeks_thursday.strftime("%Y-%m-%d"), two_weeks_sunday.strftime("%Y-%m-%d")

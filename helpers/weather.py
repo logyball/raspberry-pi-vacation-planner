@@ -44,7 +44,7 @@ def _get_current_weather(todays_weather):
     }
 
 
-def _get_forecast(weather_periods, num_days):
+def _get_forecast(weather_periods, num_days):  # todo - hardcode num of days to 5
     if not weather_periods:
         return "error"  # TODO raise exception
     forecasts = []
