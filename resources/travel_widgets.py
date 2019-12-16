@@ -30,6 +30,8 @@ class TravelInfoDriving(TravelInfo):
     def initUI(self, travel_info):
         self.left_drive_time = QLabel("Driving time: " + travel_info.get('time'))
         self.right_driving_distance = QLabel("Driving distance: " + travel_info.get('distance'))
+        for w in (self.left_drive_time, self.right_driving_distance):
+            w.setWordWrap(True)
         self.set_sizes()
         self.set_positions()
 
@@ -55,6 +57,8 @@ class TravelInfoFlying(TravelInfo):
         self.left_flight_info = QLabel("flight departs: " + ''.join([str(x.items()) for x in travel_info.get('depart')]))
         self.middle_flight_time = QLabel("flight arrives: " + ''.join([str(x.items()) for x in travel_info.get('return')]))
         self.right_flying_price = QLabel("flight price: $" + str(travel_info.get('price')))
+        for w in (self.left_flight_info, self.middle_flight_time, self.right_flying_price):
+            w.setWordWrap(True)
         self.set_sizes()
         self.set_positions()
 

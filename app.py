@@ -38,7 +38,7 @@ if __name__ == '__main__':
     argv.append("--disable-web-security")
     app = QApplication(argv)
     window = MainWindow(
-        resort="killington"
+        resort="hood"
     )
     window.show()
     app.exec_()
