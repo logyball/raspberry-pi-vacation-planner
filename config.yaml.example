@@ -12,8 +12,6 @@ origin:
   longitude: CHANGEME
 preferences:
   airline: 'UA'
-  hotels: ''
-  hotel_star_min: 3
 resorts:
   killington:
     name: Killington
