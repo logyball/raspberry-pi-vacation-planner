@@ -1,33 +1,9 @@
-from PyQt5.QtWidgets import QWidget, QSizePolicy
+from PyQt5.QtWidgets import QWidget, QSizePolicy, QLabel
 from PyQt5.QtCore import Qt
 from resources.BaseContainers import BaseHContainer, BaseVContainer
+from resources.travel_widgets import TravelInfo, travel_info_stupid_factory
 from helpers.config import get_width, get_height
 from helpers.testing_utils import set_random_background_color
-
-
-class TravelInfo(BaseHContainer):
-    left_travel_time: QWidget = None
-    right_hotel_info: QWidget = None
-
-    def __init__(self, parent=None):
-        super(TravelInfo, self).__init__(parent)
-        self.initUI()
-
-    def initUI(self):
-        self.left_travel_time = QWidget()
-        self.right_hotel_info = QWidget()
-        self.set_sizes()
-        self.set_positions()
-        for w in (self.left_travel_time, self.right_hotel_info):
-            set_random_background_color(w)
-
-    def set_sizes(self):
-        self.left_travel_time.setMinimumWidth(int(get_width() * 0.35))
-        self.right_hotel_info.setMinimumWidth(int(get_width() * 0.35))
-
-    def set_positions(self):
-        self.layout.addWidget(self.left_travel_time, alignment=Qt.AlignLeft)
-        self.layout.addWidget(self.right_hotel_info, alignment=Qt.AlignRight)
 
 
 class ResortInfo(BaseVContainer):
@@ -35,17 +11,17 @@ class ResortInfo(BaseVContainer):
     middle_live_stream: QWidget = None
     bottom_travel_info: TravelInfo = None
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, resort='None'):
         super(ResortInfo, self).__init__(parent)
-        self.initUI()
+        self.initUI(resort=resort)
 
-    def initUI(self):
-        self.top_resort_name = QWidget(parent=self)
+    def initUI(self, resort):
+        self.top_resort_name = QLabel(resort, parent=self)
         self.middle_live_stream = QWidget(parent=self)
-        self.bottom_travel_info = TravelInfo(parent=self)
+        self.bottom_travel_info = travel_info_stupid_factory(resort, parent=self)
         self.set_sizes()
         self.set_positions()
-        for w in (self.top_resort_name, self.middle_live_stream):
+        for w in (self.middle_live_stream,):
             set_random_background_color(w)
 
     def set_positions(self):

@@ -40,7 +40,7 @@ class CentralBar(BaseHContainer):
 
     def initUI(self, resort=''):
         self.left = left_sidebar.LeftSidebar(parent=self, resort=resort)
-        self.right = right_sidebar.ResortInfo(parent=self)
+        self.right = right_sidebar.ResortInfo(parent=self, resort=resort)
         self.left.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.left.setMinimumWidth(int(get_width() * 0.3))
         self.right.setMinimumWidth(int(get_width() * 0.7))

@@ -22,14 +22,14 @@ resorts:
     longitude: '-72.803'
     driving: True
     airport: RUT
-    stream: unknown
+    stream: 'https://www.youtube.com/watch?v=omVjZZRsrPo'
   steamboat:
     name: Steamboat Springs
     zip: '80487'
     latitude: '40.452'
     longitude: '-106.787'
     airport: HDN
-    stream: https://www.youtube.com/watch?v=KMGuAO3XIqU
+    stream: 'https://www.youtube.com/watch?v=KMGuAO3XIqU'
   hood:
     name: Mt Hood Meadows
     zip: '97041'

@@ -4,25 +4,21 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt
 from sys import argv
 from resources.outer_layer import BottomBar, CentralBar
+from resources.BaseContainers import BaseMainWindow
 from helpers.config import get_width, get_height
 
 
-class MainWindow(QMainWindow):
+class MainWindow(BaseMainWindow):
     central_widget: QWidget = None
-    layout: QVBoxLayout = None
 
-    def __init__(self, parent=None, height=480, width=800, resort=''):
+    def __init__(self, parent=None, resort=''):
         super(MainWindow, self).__init__(parent)
-        self.initUI(height, width)
+        self.initUI()
         self.paintUI(resort=resort)
 
-    def initUI(self, height, width):
-        self.layout = QVBoxLayout()
-        self.setFixedHeight(height)
-        self.setFixedWidth(width)
+    def initUI(self):
         self.central_widget = QWidget(parent=self)
         self.setCentralWidget(self.central_widget)
-        self.layout.setContentsMargins(0, 0, 0, 0)
         self.central_widget.setLayout(self.layout)
 
     def clearUI(self):
@@ -42,8 +38,6 @@ if __name__ == '__main__':
     argv.append("--disable-web-security")
     app = QApplication(argv)
     window = MainWindow(
-        height=get_height(),
-        width=get_width(),
         resort="killington"
     )
     window.show()
