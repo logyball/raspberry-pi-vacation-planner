@@ -65,6 +65,10 @@ def _get_individual_resort(resort_name):
     return resorts.get(resort_name, {})
 
 
+def get_list_of_resorts():
+    return list(_get_resorts().keys())
+
+
 @lru_cache(maxsize=4)
 def _get_resorts():
     return _get_config().get('resorts', {})

@@ -1,10 +1,12 @@
+from helpers.config import get_list_of_resorts
+
 class ResortMasterList(object):
     resorts: list = None
     cur_index: int = 0
     num_resorts: int = 0
 
     def __init__(self):
-        self.resorts = ['killington', 'hood', 'steamboat']
+        self.resorts = get_list_of_resorts()
         self.num_resorts = len(self.resorts)
 
     def get_next_resort(self):
