@@ -1,9 +1,36 @@
-from PyQt5.QtWidgets import QWidget, QSizePolicy
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QWidget, QSizePolicy, QPushButton, QMainWindow
+from PyQt5.QtCore import Qt, QObject, pyqtSignal
 from resources import left_sidebar, right_sidebar
 from resources.BaseContainers import BaseHContainer
 from helpers.testing_utils import set_random_background_color
 from helpers.config import get_width
+
+
+class ScrollButton(QPushButton):
+    base_window: QMainWindow = None
+
+    def __init__(self, parent=None):
+        super(ScrollButton, self).__init__(parent)
+
+
+class ScrollLeftButton(ScrollButton):
+    def __init__(self, parent=None, base_window=None):
+        super(ScrollButton, self).__init__(parent)
+        self.setText("<")
+        self.base_window = base_window
+
+    def mousePressEvent(self, event):
+        self.base_window.move_left.emit()
+
+
+class ScrollRightButton(ScrollButton):
+    def __init__(self, parent=None, base_window=None):
+        super(ScrollButton, self).__init__(parent)
+        self.setText(">")
+        self.base_window = base_window
+
+    def mousePressEvent(self, event):
+        self.base_window.move_right.emit()
 
 
 class BottomBar(BaseHContainer):
@@ -13,12 +40,12 @@ class BottomBar(BaseHContainer):
 
     def __init__(self, parent=None):
         super(BottomBar, self).__init__(parent)
-        self.initUI()
+        self.initUI(base_window=parent)
 
-    def initUI(self):
-        self.left = QWidget()
+    def initUI(self, base_window):
+        self.left = ScrollLeftButton(parent=self, base_window=base_window)
         self.middle = QWidget()
-        self.right = QWidget()
+        self.right = ScrollRightButton(parent=self, base_window=base_window)
         self.left.setMinimumWidth(int(get_width() * 0.05))
         self.middle.setMinimumWidth(int(get_width() * 0.89))
         self.middle.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)

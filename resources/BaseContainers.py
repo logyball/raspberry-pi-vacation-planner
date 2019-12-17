@@ -1,6 +1,8 @@
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import (
     QVBoxLayout, QHBoxLayout, QFrame, QMainWindow
 )
+from PyQt5.Qt import Qt
 from helpers.config import get_width, get_height
 
 
@@ -38,3 +40,7 @@ class BaseMainWindow(QMainWindow):
         self.setFixedHeight(get_height())
         self.setFixedWidth(get_width())
         self.layout.setContentsMargins(0, 0, 0, 0)
+
+    def keyPressEvent(self, e):
+        if e.key() == Qt.Key_Escape:
+            self.close()
