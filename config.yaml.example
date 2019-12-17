@@ -7,11 +7,11 @@ screen_size:
   height: 480
   width: 800
 origin:
-  airport: JFK
+  airport: NYC
   latitude: CHANGEME
   longitude: CHANGEME
 preferences:
-  airline: 'UA'
+  airlines: 'UA'
 resorts:
   killington:
     name: Killington
@@ -19,19 +19,19 @@ resorts:
     latitude: '43.617'
     longitude: '-72.803'
     driving: True
-    airport: RUT
+    airport: 'RUT'
     stream: 'https://www.youtube.com/watch?v=omVjZZRsrPo'
   steamboat:
     name: Steamboat Springs
     zip: '80487'
     latitude: '40.452'
     longitude: '-106.787'
-    airport: HDN
+    airport: 'HDN'
     stream: 'https://www.youtube.com/watch?v=KMGuAO3XIqU'
   hood:
     name: Mt Hood Meadows
     zip: '97041'
     latitude: '45.331'
     longitude: '-121.665'
-    airport: PDX
+    airport: 'PDX'
     stream: https://www.skihood.com/cams/vista

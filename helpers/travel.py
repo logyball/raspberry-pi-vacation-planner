@@ -38,13 +38,12 @@ def _get_driving_to_resort_data(resort):
 def _get_flying_to_resort_data(resort):
     prefs = _get_flight_prefs(resort)
     flights_list = _in_two_weekends_flights(prefs)
+    # TODO - make better solution than this - the real change should be to develop the UI
+    # component to have an expected object definition and then build the info into a
+    # dict that the UI expects
+    flights_list_stringified = _build_flight_strings(flights_list)
     pprint(flights_list)  # TODO - change to logging
-    return flights_list
-
-
-# def get_hotels_near_resort_data(resort):
-#     resort_lat, resort_lon = get_resort_coordinates(resort)
-#     origin_lat, origin_lon = get_origin_coordinates()
+    return flights_list_stringified
 
 
 def _get_common_flight_info(segments):
@@ -99,14 +98,18 @@ def _in_two_weekends_flights(prefs):
             destination=prefs.get('res_airpot'),
             departureDate=thursday,
             returnDate=sunday,
-            nonStop=prefs.get('nonstop'),
-            includeAirlines=prefs.get('airlines'),
+            nonStop=prefs.get('nonstop', False),
+            includeAirlines=prefs.get('airlines', 'UA'),
             currency='USD'
         )
         best_flight = _get_best_flight(flights.data)
     except Exception as e:
         print(e)  # TODO - logging
-        return 'no flight data'
+        return {
+            'depart': "could not find flight info for departure",
+            'return': "could not find flight info for return",
+            'price': "could not find flight price"
+        }
     return best_flight
 
 
@@ -170,3 +173,22 @@ def _get_travel_dates():
     two_weeks_thursday = this_thursday + timedelta(days=14)
     two_weeks_sunday = two_weeks_thursday + timedelta(days=3)  # TODO - logging
     return two_weeks_thursday.strftime("%Y-%m-%d"), two_weeks_sunday.strftime("%Y-%m-%d")
+
+# TODO
+# this is hacky and should be removed once flight UI is complete
+def _build_flight_strings(flight_info):
+    print(flight_info)
+    flight_dep_str = flight_info['depart']
+    flight_arr_str = flight_info['return']
+    flight_price_str = flight_info['price']
+    if flight_dep_str != 'could not find flight info for departure':
+        flight_dep_str = "flight departs: " + ''.join([str(x.items()) for x in flight_info.get('depart')])
+    if flight_arr_str != 'could not find flight info for return':
+        flight_arr_str = "flight arrives: " + ''.join([str(x.items()) for x in flight_info.get('return')])
+    if flight_price_str != 'could not find flight price':
+        flight_price_str = "flight price: $" + str(flight_info.get('price'))
+    return {
+        'depart': flight_dep_str,
+        'return': flight_arr_str,
+        'price': flight_price_str
+    }
