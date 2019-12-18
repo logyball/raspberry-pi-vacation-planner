@@ -19,7 +19,8 @@ create_main_flying_table = """
     resort TEXT, 
     date TEXT, 
     hour INTEGER,
-    price TEXT
+    price TEXT,
+    err INTEGER
     );
     """
 
@@ -48,9 +49,9 @@ create_segment_info_table = """
 
 write_flying_info = """
     INSERT INTO flying
-    (resort, date, hour, price)
+    (resort, date, hour, price, err)
     VALUES
-    (?, ?, ?, ?);
+    (?, ?, ?, ?, ?);
 """
 
 write_flight_segment = """
@@ -103,6 +104,14 @@ read_travel_info_flying = """
     FROM flying
     INNER JOIN flying_rel fr ON flying.flight_seg_rel_id = fr.flight_rel_id
     INNER JOIN segment_info si ON fr.segment_rel_id = si.segment_id
+    WHERE date = :date
+    AND hour = :hour
+    AND resort = :resort
+"""
+
+check_flying_for_error = """
+    SELECT err
+    from flying
     WHERE date = :date
     AND hour = :hour
     AND resort = :resort

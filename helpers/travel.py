@@ -8,19 +8,7 @@ from datetime import timedelta, date
 from pprint import pprint
 
 
-def get_travel_info(resort):
-    if get_resort_driving(resort):
-        return {
-            'mode': 'driving',
-            'info': _get_driving_to_resort_data(resort)
-        }
-    return {
-        'mode': 'flying',
-        'info': _get_flying_to_resort_data(resort)
-    }
-
-
-def _get_driving_to_resort_data(resort):
+def get_driving_to_resort_data_from_api(resort):
     cli = _get_gmaps_client()
     resort_lat, resort_lon = get_resort_coordinates(resort)
     origin_lat, origin_lon = get_origin_coordinates()
@@ -35,7 +23,7 @@ def _get_driving_to_resort_data(resort):
     }
 
 
-def _get_flying_to_resort_data(resort):
+def get_flying_to_resort_data_from_api(resort):
     prefs = _get_flight_prefs(resort)
     flights_list = _in_two_weekends_flights(prefs)
     print(flights_list)  # TODO - change to logging
