@@ -2,11 +2,12 @@ import sqlite3
 from datetime import datetime
 from helpers.config import get_resort_driving, get_list_of_resorts
 from db.db_hardcoded_sql import (
-    enable_foreign_keys, create_main_driving_table, check_flying_resort_current,
+    enable_foreign_keys, create_main_driving_table, read_travel_info_driving,
     create_main_flying_table, create_flying_segment_rel, create_segment_info_table,
     write_flying_info, write_flight_segment, write_drive_info, check_driving_resort_current,
-    check_flying_resort_current, write_flight_rel_info
+    check_flying_resort_current, write_flight_rel_info, read_travel_info_flying
 )
+from helpers.travel import _get_driving_to_resort_data, _get_flying_to_resort_data
 
 def _get_cur_date_hour():
     cur_dt = datetime.now()
@@ -37,8 +38,51 @@ class BaseTravelDb(object):
         self.connection = sqlite3.connect(self.source)
         self.cursor = self.connection.cursor()
 
+    def _check_driving_is_current(self, resort: str):
+        query_params = _check_currentness_query_params(resort)
+        self.cursor.execute(check_driving_resort_current, query_params)
+        return self._check_currentness_result()
+
+    def _check_flying_is_current(self, resort: str):
+        query_params = _check_currentness_query_params(resort)
+        self.cursor.execute(check_flying_resort_current, query_params)
+        return self._check_currentness_result()
+
+    def _check_currentness_result(self):
+        results = self.cursor.fetchone()
+        if results[0] > 0:
+            return True
+        return False
+
+    def _get_cursor(self):
+        self.cursor = self.connection.cursor()
+
     def __del__(self):
         self.connection.close()
+
+
+def _build_flight_info_dict(segments: list):
+    dep = []
+    ret = []
+    price = ''
+    for seg in segments:
+        price = seg[0]
+        seg_d = {
+            'departFrom': seg[1],
+            'departAt': seg[2],
+            'arriveIn': seg[3],
+            'arriveAt': seg[4],
+            'duration': seg[5],
+        }
+        if seg[6]:
+            dep.append(seg_d)
+        else:
+            ret.append(seg_d)
+    return {
+        'depart': dep,
+        'price': price,
+        'return': ret
+    }
 
 
 class TravelDbReader(BaseTravelDb):
@@ -52,10 +96,35 @@ class TravelDbReader(BaseTravelDb):
         return self._get_cur_flying_info(resort, cur_dt)
 
     def _get_cur_driving_info(self, resort: str, cur_dt: tuple):
-        pass
+        """{'resort': resort, 'date': date, 'hour': hour}"""
+        if self._check_driving_is_current(resort):
+            query_params = self._get_info_query_params(resort, cur_dt)
+            self.cursor.execute(read_travel_info_driving, query_params)
+            result = self.cursor.fetchone()
+            return {
+                'distance': result[0],
+                'time': result[1]
+            }
+        print('driving info: not current, fetching from slow ass api')
+        return _get_driving_to_resort_data(resort)
 
     def _get_cur_flying_info(self, resort: str, cur_dt: tuple):
-        pass
+        """{'resort': resort, 'date': date, 'hour': hour}"""
+        if self._check_flying_is_current(resort):
+            query_params = self._get_info_query_params(resort, cur_dt)
+            self.cursor.execute(read_travel_info_flying, query_params)
+            segment_list = self.cursor.fetchall()
+            return _build_flight_info_dict(segment_list)
+        print('flying info: not current, fetching from slow ass api')
+        return _get_flying_to_resort_data(resort)
+
+    def _get_info_query_params(self, resort: str, cur_dt: tuple):
+        self._get_cursor()
+        return {
+            'resort': resort,
+            'date': cur_dt[0],
+            'hour': cur_dt[1]
+        }
 
 
 class TravelDbBackgroundProcess(BaseTravelDb):
@@ -81,6 +150,7 @@ class TravelDbBackgroundProcess(BaseTravelDb):
 
     def add_drive_info(self, drive_time_info: dict, resort: str):
         """ (resort, date, hour, drive_time, drive_distance) """
+        print(f'adding driving info from api for {resort}')
         cur_dt_hour = _get_cur_date_hour()
         drive_tup = (
             resort,
@@ -95,6 +165,7 @@ class TravelDbBackgroundProcess(BaseTravelDb):
 
     def add_flight_info(self, flight_info: dict, resort: str):
         """ (resort, date, hour, price) """
+        print(f'adding flying info from api for {resort}')
         cur_dt = _get_cur_date_hour()
         flight_write_data = (
             resort,
@@ -112,9 +183,11 @@ class TravelDbBackgroundProcess(BaseTravelDb):
     def update_resorts_check(self):
         for resort in self.resort_list:
             if get_resort_driving(resort) and not self._check_driving_is_current(resort):
-                print('need update to driving')  # todo - update driving info
+                drive_info = _get_driving_to_resort_data(resort)
+                self.add_drive_info(drive_info, resort)
             if not get_resort_driving(resort) and not self._check_flying_is_current(resort):
-                print('need update to flying')  # todo -update flying info
+                flying_info = _get_flying_to_resort_data(resort)
+                self.add_flight_info(flying_info, resort)
 
     def _add_departure_segments(self, flight_depart_info: list, flight_id: int):
         """(from_location, from_time, to_location, to_time, duration, 1)"""
@@ -154,21 +227,3 @@ class TravelDbBackgroundProcess(BaseTravelDb):
         last_id = self.cursor.fetchone()
         return last_id[0]
 
-    def _check_driving_is_current(self, resort: str):
-        query_params = _check_currentness_query_params(resort)
-        self.cursor.execute(check_driving_resort_current, query_params)
-        return self._check_currentness_result()
-
-    def _check_flying_is_current(self, resort: str):
-        query_params = _check_currentness_query_params(resort)
-        self.cursor.execute(check_flying_resort_current, query_params)
-        return self._check_currentness_result()
-
-    def _check_currentness_result(self):
-        results = self.cursor.fetchone()
-        if results[0] > 0:
-            return True
-        return False
-
-    def _get_cursor(self):
-        self.cursor = self.connection.cursor()

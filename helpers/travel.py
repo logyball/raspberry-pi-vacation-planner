@@ -113,6 +113,7 @@ def _in_two_weekends_flights(prefs):
             'return': "could not find flight info for return",
             'price': "could not find flight price"
         }
+    pprint(best_flight)
     return best_flight
 
 

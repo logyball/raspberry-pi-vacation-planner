@@ -90,23 +90,20 @@ check_flying_resort_current = """
     AND hour = :hour;
 """
 
-# query_travel_info_driving = """
-#     SELECT *
-#     FROM driving
-#     WHERE resort = resort
-#     AND date = date
-#     AND hour = hour
-# """
+read_travel_info_driving = """
+    SELECT drive_distance, drive_time
+    FROM driving
+    WHERE resort = :resort
+    AND date = :date
+    AND hour = :hour
+"""
 
-# query_travel_info_flying = """
-#     SELECT *
-#     FROM flying as f
-#     INNER JOIN segment_info as s
-#     ON (
-#         f.segment_id = s.segment_id
-#     )
-#     WHERE resort = resort
-#     AND f.date = date
-#     AND f.hour = hour
-#     AND f.depart = depart
-# """
+read_travel_info_flying = """
+    SELECT price, from_location, from_time, to_location, to_time, duration, depart
+    FROM flying
+    INNER JOIN flying_rel fr ON flying.flight_seg_rel_id = fr.flight_rel_id
+    INNER JOIN segment_info si ON fr.segment_rel_id = si.segment_id
+    WHERE date = :date
+    AND hour = :hour
+    AND resort = :resort
+"""
