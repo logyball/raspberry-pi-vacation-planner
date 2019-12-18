@@ -2,3 +2,4 @@ venv
 .idea
 config.yaml
 __pycache__
+*.db
