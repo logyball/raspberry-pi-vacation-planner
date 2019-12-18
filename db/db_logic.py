@@ -1,7 +1,12 @@
 import sqlite3
 from datetime import datetime
 from helpers.config import get_resort_driving, get_list_of_resorts
-
+from db.db_hardcoded_sql import (
+    enable_foreign_keys, create_main_driving_table, check_flying_resort_current,
+    create_main_flying_table, create_flying_segment_rel, create_segment_info_table,
+    write_flying_info, write_flight_segment, write_drive_info, check_driving_resort_current,
+    check_flying_resort_current, write_flight_rel_info
+)
 
 def _get_cur_date_hour():
     cur_dt = datetime.now()
@@ -63,17 +68,18 @@ class TravelDbBackgroundProcess(BaseTravelDb):
         self.resort_list = get_list_of_resorts()
 
     def init_db(self):
-        self.cursor.execute(enable_foreign_keys)  # todo - smarter way than if not exists
+        self.cursor.execute(enable_foreign_keys)
         self.connection.commit()
-        self.make_tables()
+        self.make_tables()  # todo - smarter way than if not exists
 
     def make_tables(self):
         self.cursor.execute(create_main_driving_table)
         self.cursor.execute(create_main_flying_table)
         self.cursor.execute(create_segment_info_table)
+        self.cursor.execute(create_flying_segment_rel)
         self.connection.commit()
 
-    def add_drive_time(self, drive_time_info: dict, resort: str):
+    def add_drive_info(self, drive_time_info: dict, resort: str):
         """ (resort, date, hour, drive_time, drive_distance) """
         cur_dt_hour = _get_cur_date_hour()
         drive_tup = (
@@ -87,38 +93,21 @@ class TravelDbBackgroundProcess(BaseTravelDb):
         self.cursor.execute(write_drive_info, drive_tup)
         self.connection.commit()
 
-    def add_flight_segment(self, flight_seg_info: dict, resort: str, depart: int):
-        """ (from_location, from_time, to_location, to_time) """
-        flight_seg_tup = (
-            flight_seg_info.get('departFrom'),
-            flight_seg_info.get('departAt'),
-            flight_seg_info.get('arriveIn'),
-            flight_seg_info.get('arriveAt')
-        )
-        self._get_cursor()
-        self.cursor.execute(write_flight_segment, flight_seg_tup)
-        self.connection.commit()
-        self._add_flight_seg_to_flying_table(resort=resort, depart=depart)
-
-    def _add_flight_seg_to_flying_table(self, resort: str, depart: int):
-        """ (resort, date, hour, depart, segment_id) """
-        segment_id = self._get_last_seg_id()
-        cur_dt_hour = _get_cur_date_hour()
-        flying_tup = (
+    def add_flight_info(self, flight_info: dict, resort: str):
+        """ (resort, date, hour, price) """
+        cur_dt = _get_cur_date_hour()
+        flight_write_data = (
             resort,
-            cur_dt_hour[0],
-            cur_dt_hour[1],
-            depart,
-            segment_id
+            cur_dt[0],
+            cur_dt[1],
+            flight_info.get('price', 'unknown price')
         )
         self._get_cursor()
-        self.cursor.execute(write_flying_info, flying_tup)
+        self.cursor.execute(write_flying_info, flight_write_data)
         self.connection.commit()
-
-    def _get_last_seg_id(self):
-        self.cursor.execute("SELECT last_insert_rowid();")
-        last_id = self.cursor.fetchone()
-        return last_id[0]
+        flight_id = self._get_last_inserted_id()
+        self._add_departure_segments(flight_info.get('depart', []), flight_id)
+        self._add_return_segments(flight_info.get('return', []), flight_id)
 
     def update_resorts_check(self):
         for resort in self.resort_list:
@@ -126,6 +115,44 @@ class TravelDbBackgroundProcess(BaseTravelDb):
                 print('need update to driving')  # todo - update driving info
             if not get_resort_driving(resort) and not self._check_flying_is_current(resort):
                 print('need update to flying')  # todo -update flying info
+
+    def _add_departure_segments(self, flight_depart_info: list, flight_id: int):
+        """(from_location, from_time, to_location, to_time, duration, 1)"""
+        for segment in flight_depart_info:
+            flight_seg_tup = (
+                segment.get('departFrom'),
+                segment.get('departAt'),
+                segment.get('arriveIn'),
+                segment.get('arriveAt'),
+                segment.get('duration'),
+                1
+            )
+            self._add_flight_segment(flight_seg_tup, flight_id)
+
+    def _add_return_segments(self, flight_return_info: list, flight_id: int):
+        """(from_location, from_time, to_location, to_time, duration, 0)"""
+        for segment in flight_return_info:
+            flight_seg_tup = (
+                segment.get('departFrom'),
+                segment.get('departAt'),
+                segment.get('arriveIn'),
+                segment.get('arriveAt'),
+                segment.get('duration'),
+                0
+            )
+            self._add_flight_segment(flight_seg_tup, flight_id)
+
+    def _add_flight_segment(self, flight_seg_tup: tuple, flight_id: int):
+        self.cursor.execute(write_flight_segment, flight_seg_tup)
+        self.connection.commit()
+        seg_id = self._get_last_inserted_id()
+        self.cursor.execute(write_flight_rel_info, (flight_id, seg_id))
+        self.connection.commit()
+
+    def _get_last_inserted_id(self):
+        self.cursor.execute("SELECT last_insert_rowid();")
+        last_id = self.cursor.fetchone()
+        return last_id[0]
 
     def _check_driving_is_current(self, resort: str):
         query_params = _check_currentness_query_params(resort)
@@ -145,98 +172,3 @@ class TravelDbBackgroundProcess(BaseTravelDb):
 
     def _get_cursor(self):
         self.cursor = self.connection.cursor()
-
-
-enable_foreign_keys = "PRAGMA foreign_keys = ON;"
-
-create_main_driving_table = """
-    CREATE TABLE IF NOT EXISTS driving
-    (
-    resort TEXT, 
-    date TEXT, 
-    hour INTEGER,
-    drive_time TEXT,
-    drive_distance TEXT
-    );
-    """
-
-create_main_flying_table = """
-    CREATE TABLE IF NOT EXISTS flying
-    (
-    resort TEXT, 
-    date TEXT, 
-    hour INTEGER,
-    depart INTEGER,
-    segment_id INTEGER,
-    FOREIGN KEY(segment_id) REFERENCES segment_info(segment_id)    
-    );
-    """
-
-create_segment_info_table = """
-    CREATE TABLE IF NOT EXISTS segment_info
-    (
-    segment_id INTEGER PRIMARY KEY,
-    from_location TEXT,
-    from_time TEXT,
-    to_location TEXT,
-    to_time TEXT
-    );
-    """
-
-query_travel_info_driving = """
-    SELECT *
-    FROM driving
-    WHERE resort = resort
-    AND date = date
-    AND hour = hour
-"""
-
-query_travel_info_flying = """
-    SELECT *
-    FROM flying as f
-    INNER JOIN segment_info as s
-    ON (
-        f.segment_id = s.segment_id
-    )
-    WHERE resort = resort
-    AND f.date = date
-    AND f.hour = hour
-    AND f.depart = depart
-"""
-
-write_flying_info = """
-    INSERT INTO flying
-    (resort, date, hour, depart, segment_id)
-    VALUES
-    (?, ?, ?, ?, ?);
-"""
-
-write_flight_segment = """
-    INSERT INTO segment_info
-    (from_location, from_time, to_location, to_time)
-    VALUES
-    (?, ?, ?, ?);
-"""
-
-write_drive_info = """
-    INSERT INTO driving
-    (resort, date, hour, drive_time, drive_distance)
-    VALUES
-    (?, ?, ?, ?, ?);
-"""
-
-check_driving_resort_current = """
-    SELECT COUNT(*)
-    FROM driving
-    WHERE resort = :resort
-    AND date = :date
-    AND hour = :hour;
-"""
-
-check_flying_resort_current = """
-    SELECT COUNT(*)
-    FROM flying
-    WHERE resort = :resort
-    AND date = :date
-    AND hour = :hour;
-"""

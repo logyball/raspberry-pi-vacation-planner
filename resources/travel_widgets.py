@@ -95,8 +95,11 @@ class FlightSegments(BaseHContainer):
         self.initUI(flight_segments_info=flight_segments_info)
 
     def initUI(self, flight_segments_info):
-        for segment in flight_segments_info:
-            self.layout.addWidget(FlightSegment(parent=self, flight_segment_info=segment), alignment=Qt.AlignHCenter)
+        if type(flight_segments_info) == str and 'could not find flight info' in flight_segments_info:
+            self.layout.addWidget(QLabel(flight_segments_info), alignment=Qt.AlignHCenter)
+        else:
+            for segment in flight_segments_info:
+                self.layout.addWidget(FlightSegment(parent=self, flight_segment_info=segment), alignment=Qt.AlignHCenter)
 
 
 class FlightSegment(BaseVContainer):

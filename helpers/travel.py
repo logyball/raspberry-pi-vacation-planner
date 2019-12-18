@@ -38,11 +38,7 @@ def _get_driving_to_resort_data(resort):
 def _get_flying_to_resort_data(resort):
     prefs = _get_flight_prefs(resort)
     flights_list = _in_two_weekends_flights(prefs)
-    # TODO - make better solution than this - the real change should be to develop the UI
-    # component to have an expected object definition and then build the info into a
-    # dict that the UI expects
-    # flights_list_stringified = _build_flight_strings(flights_list)
-    pprint(flights_list)  # TODO - change to logging
+    print(flights_list)  # TODO - change to logging
     return flights_list
 
 
@@ -54,11 +50,17 @@ def _get_common_flight_info(segments):
         flight_depart_airport = flight_info.get('departure').get('iataCode')
         flight_arrives_airport = flight_info.get('arrival').get('iataCode')
         flight_arrives = flight_info.get('arrival').get('at')
+        flight_duration = flight_info.get('duration', 'unknown duration')
+        try:
+            flight_massaged_dur = flight_duration.split('T')[1]
+        except IndexError:
+            flight_massaged_dur = flight_duration
         massaged_segments.append({
             'departFrom': flight_depart_airport,
             'departAt': flight_departs,
             'arriveIn': flight_arrives_airport,
-            'arriveAt': flight_arrives
+            'arriveAt': flight_arrives,
+            'duration': flight_massaged_dur
         })
     return massaged_segments
 
@@ -82,6 +84,7 @@ def _get_best_flight(candidate_flights):
             continue
         best_price = total_price
         best_flight_so_far = actual_data
+    print(best_flight_so_far)
     return {
         'depart': _get_best_flight_depart_info(best_flight_so_far.get('services')),
         'return': _get_best_flight_return_info(best_flight_so_far.get('services')),
