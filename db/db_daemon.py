@@ -7,5 +7,4 @@ def db_daemon(db_path):
     database = TravelDbBackgroundProcess(db_path)
     while True:
         database.update_resorts_check()
-        print('resorts updated, going to sleep')
-        sleep(5)
+        sleep(2)
