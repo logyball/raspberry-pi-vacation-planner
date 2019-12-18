@@ -41,9 +41,9 @@ def _get_flying_to_resort_data(resort):
     # TODO - make better solution than this - the real change should be to develop the UI
     # component to have an expected object definition and then build the info into a
     # dict that the UI expects
-    flights_list_stringified = _build_flight_strings(flights_list)
+    # flights_list_stringified = _build_flight_strings(flights_list)
     pprint(flights_list)  # TODO - change to logging
-    return flights_list_stringified
+    return flights_list
 
 
 def _get_common_flight_info(segments):
