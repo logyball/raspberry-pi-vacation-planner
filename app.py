@@ -7,9 +7,10 @@ from resources.outer_layer import BottomBar, CentralBar
 from resources.BaseContainers import BaseMainWindow
 from helpers.config import get_width, get_height, get_db_path
 from helpers.scrolling_resort_list import ResortMasterList
-from time import time, sleep
+from helpers.threading_functions import cntdown_timer
 from db.db_logic import TravelDbReader
 from db.db_daemon import db_daemon
+from time import time
 from threading import Thread
 
 
@@ -18,18 +19,16 @@ class MainWindow(BaseMainWindow):
     central_widget: QWidget = None
     move_left = pyqtSignal()
     move_right = pyqtSignal()
-    move_resort_time: int = None
     db_reader: TravelDbReader = None
+    time_to_move: int = None
 
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
         self.resorts = ResortMasterList()
-        self.move_left.connect(self.move_left_handler)
-        self.move_right.connect(self.move_right_handler)
+        self.move_left.connect(self._move_left_handler)
+        self.move_right.connect(self._move_right_handler)
         self.initUI()
         self.paintUI(resort=self.resorts.get_resort_at_index(0))
-        self.move_resort_time = int(time()) + 15
-        # self.timeout()
 
     def initUI(self):
         self.central_widget = QWidget(parent=self)
@@ -40,7 +39,7 @@ class MainWindow(BaseMainWindow):
         for i in reversed(range(self.layout.count())):
             self.layout.itemAt(i).widget().setParent(None)
 
-    def paintUI(self, resort=''):
+    def paintUI(self, resort: str):
         cb = CentralBar(parent=self, resort=resort)
         cb.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         cb.setFixedHeight(int(get_height() * 0.95))
@@ -48,25 +47,20 @@ class MainWindow(BaseMainWindow):
         bb.setFixedHeight(int(get_height() * 0.05))
         self.layout.addWidget(cb, alignment=Qt.AlignVCenter)
         self.layout.addWidget(bb, alignment=Qt.AlignBottom)
+        self._set_timer()
 
-    def move_left_handler(self):
+    def _move_left_handler(self):
         self.clearUI()
         self.initUI()
         self.paintUI(self.resorts.get_previous_resort())
-        # self.move_resort_time = int(time()) + 5
-        # self.timeout()
 
-    def move_right_handler(self):
+    def _move_right_handler(self):
         self.clearUI()
         self.initUI()
         self.paintUI(self.resorts.get_next_resort())
-        # self.move_resort_time = int(time()) + 5
-        # self.timeout()
 
-    # def timeout(self):
-    #     while int(time()) < self.move_resort_time:
-    #         sleep(0.1)
-    #     self.move_right.emit()
+    def _set_timer(self):
+        self.time_to_move = int(time()) + 60
 
 
 if __name__ == '__main__':
@@ -76,4 +70,6 @@ if __name__ == '__main__':
     app = QApplication(argv)
     window = MainWindow()
     window.show()
+    timer = Thread(target=cntdown_timer, args=(window,), daemon=True)
+    timer.start()
     app.exec_()
