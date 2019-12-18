@@ -39,14 +39,6 @@ def get_resort_coordinates(resort_name):
     return resort.get('latitude'), resort.get('longitude')
 
 
-def get_hotel_min():
-    return _get_config().get('preferences', {}).get('hotel_star_min', 3)
-
-
-def get_hotels_pref():
-    return _get_config().get('preferences', {}).get('hotels', '')
-
-
 def get_airlines_pref():
     prefs = _get_config().get('preferences', {})
     return prefs.get('airlines', '')
@@ -71,6 +63,10 @@ def get_height():
 def _get_individual_resort(resort_name):
     resorts = _get_resorts()
     return resorts.get(resort_name, {})
+
+
+def get_list_of_resorts():
+    return list(_get_resorts().keys())
 
 
 @lru_cache(maxsize=4)

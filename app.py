@@ -1,32 +1,36 @@
 from PyQt5.QtWidgets import (
     QApplication, QVBoxLayout, QMainWindow, QWidget, QSizePolicy
 )
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 from sys import argv
 from resources.outer_layer import BottomBar, CentralBar
+from resources.BaseContainers import BaseMainWindow
 from helpers.config import get_width, get_height
+from helpers.scrolling_resort_list import ResortMasterList
 
 
-class MainWindow(QMainWindow):
+class MainWindow(BaseMainWindow):
+    resorts: ResortMasterList = None
     central_widget: QWidget = None
-    layout: QVBoxLayout = None
+    move_left = pyqtSignal()
+    move_right = pyqtSignal()
 
-    def __init__(self, parent=None, height=480, width=800, resort=''):
+    def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
-        self.initUI(height, width)
-        self.paintUI(resort=resort)
+        self.resorts = ResortMasterList()
+        self.move_left.connect(self.move_left_handler)
+        self.move_right.connect(self.move_right_handler)
+        self.initUI()
+        self.paintUI(resort=self.resorts.get_resort_at_index(0))
 
-    def initUI(self, height, width):
-        self.layout = QVBoxLayout()
-        self.setFixedHeight(height)
-        self.setFixedWidth(width)
+    def initUI(self):
         self.central_widget = QWidget(parent=self)
         self.setCentralWidget(self.central_widget)
-        self.layout.setContentsMargins(0, 0, 0, 0)
         self.central_widget.setLayout(self.layout)
 
     def clearUI(self):
-        self.layout = QVBoxLayout()
+        for i in reversed(range(self.layout.count())):
+            self.layout.itemAt(i).widget().setParent(None)
 
     def paintUI(self, resort=''):
         cb = CentralBar(parent=self, resort=resort)
@@ -37,14 +41,20 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(cb, alignment=Qt.AlignVCenter)
         self.layout.addWidget(bb, alignment=Qt.AlignBottom)
 
+    def move_left_handler(self):
+        self.clearUI()
+        self.initUI()
+        self.paintUI(self.resorts.get_previous_resort())
+
+    def move_right_handler(self):
+        self.clearUI()
+        self.initUI()
+        self.paintUI(self.resorts.get_next_resort())
+
 
 if __name__ == '__main__':
     argv.append("--disable-web-security")
     app = QApplication(argv)
-    window = MainWindow(
-        height=get_height(),
-        width=get_width(),
-        resort="killington"
-    )
+    window = MainWindow()
     window.show()
     app.exec_()
