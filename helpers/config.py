@@ -69,6 +69,10 @@ def get_list_of_resorts():
     return list(_get_resorts().keys())
 
 
+def get_db_path():
+    return _get_config().get('db_path')
+
+
 @lru_cache(maxsize=4)
 def _get_resorts():
     return _get_config().get('resorts', {})

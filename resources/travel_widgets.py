@@ -1,16 +1,15 @@
 from datetime import datetime
-from pprint import pprint
-
 from dateutil import parser
-from PyQt5.QtWidgets import QWidget, QSizePolicy, QLabel
+from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5.QtCore import Qt
+from db.db_logic import TravelDbReader
 from resources.BaseContainers import BaseHContainer, BaseVContainer
-from helpers.config import get_width
-from helpers.travel import get_travel_info
+from helpers.config import get_width, get_db_path
 
 
 def travel_info_stupid_factory(resort, parent=None):
-    travel_info = get_travel_info(resort=resort)
+    db_reader = TravelDbReader(get_db_path())
+    travel_info = db_reader.get_travel_info(resort=resort)
     if travel_info.get("mode", "flying") == "flying":
         return TravelInfoFlying(travel_info=travel_info, parent=parent)
     return TravelInfoDriving(travel_info=travel_info, parent=parent)
@@ -23,7 +22,6 @@ class TravelInfo(BaseHContainer):
 
 class TravelInfoDriving(TravelInfo):
     left_drive_time: QWidget = None
-    # middle_driving_directions: QWidget = None
     right_driving_distance: QWidget = None
 
     def __init__(self, travel_info=None, parent=None):

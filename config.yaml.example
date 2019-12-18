@@ -1,3 +1,4 @@
+db_path: 'test.db'
 keys:
   amadeus_key: CHANGEME
   amadeus_secret: CHANGEME

@@ -92,8 +92,14 @@ class TravelDbReader(BaseTravelDb):
     def get_travel_info(self, resort: str):
         cur_dt = _get_cur_date_hour()
         if get_resort_driving(resort):
-            return self._get_cur_driving_info(resort, cur_dt)
-        return self._get_cur_flying_info(resort, cur_dt)
+            return {
+                'mode': 'driving',
+                'info': self._get_cur_driving_info(resort, cur_dt)
+            }
+        return {
+            'mode': 'flying',
+            'info': self._get_cur_flying_info(resort, cur_dt)
+        }
 
     def _get_cur_driving_info(self, resort: str, cur_dt: tuple):
         """{'resort': resort, 'date': date, 'hour': hour}"""
@@ -125,7 +131,6 @@ class TravelDbReader(BaseTravelDb):
             'date': cur_dt[0],
             'hour': cur_dt[1]
         }
-
 
 class TravelDbBackgroundProcess(BaseTravelDb):
     resort_list: list = None

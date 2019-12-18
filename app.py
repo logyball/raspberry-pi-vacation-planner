@@ -5,9 +5,12 @@ from PyQt5.QtCore import Qt, pyqtSignal
 from sys import argv
 from resources.outer_layer import BottomBar, CentralBar
 from resources.BaseContainers import BaseMainWindow
-from helpers.config import get_width, get_height
+from helpers.config import get_width, get_height, get_db_path
 from helpers.scrolling_resort_list import ResortMasterList
 from time import time, sleep
+from db.db_logic import TravelDbReader
+from db.db_daemon import db_daemon
+from threading import Thread
 
 
 class MainWindow(BaseMainWindow):
@@ -16,6 +19,7 @@ class MainWindow(BaseMainWindow):
     move_left = pyqtSignal()
     move_right = pyqtSignal()
     move_resort_time: int = None
+    db_reader: TravelDbReader = None
 
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
@@ -66,6 +70,8 @@ class MainWindow(BaseMainWindow):
 
 
 if __name__ == '__main__':
+    db_watcher = Thread(target=db_daemon, args=(get_db_path(),), daemon=True)
+    db_watcher.start()
     argv.append("--disable-web-security")
     app = QApplication(argv)
     window = MainWindow()
