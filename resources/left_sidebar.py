@@ -3,6 +3,7 @@ from PyQt5.QtCore import Qt
 
 from db.db_logic import WeatherDbReader
 from helpers.config import get_width, get_height, get_db_path
+from helpers.styling import load_stylesheet
 from resources.weather_widgets import CurrentTemp, CurrentIcon, SnowReport
 from resources.BaseContainers import BaseVContainer, BaseHContainer
 from resources.WeatherForecastTable import WeatherForecastTable
@@ -21,7 +22,7 @@ class WeatherBar(BaseHContainer):
         self.left_icon.setFixedWidth(int(get_width() * 0.15))
         self.left_icon.setIcon()
         self.right_temp = CurrentTemp(parent=self, cur_temp=todays_weather.get("temp"))
-        self.right_temp.setFixedWidth(int(get_width() * 0.15))
+        self.right_temp.setFixedWidth(int(get_width() * 0.14))
         self.layout.addWidget(self.left_icon, alignment=Qt.AlignHCenter)
         self.layout.addWidget(self.right_temp, alignment=Qt.AlignHCenter)
 
@@ -43,8 +44,9 @@ class LeftSidebar(BaseVContainer):
         self.middle_snow_report = SnowReport(report=weather_info.get("today").get("details"), resort=resort)
         self.bottom_weather_forecast = WeatherForecastTable(parent=self, forecast=weather_info.get('forecast'))
         self.top_weather_bar.setFixedHeight(int(get_height() * 0.25))
-        self.middle_snow_report.setMaximumHeight(int(get_height() * 0.25))
-        self.bottom_weather_forecast.setMinimumHeight(int(get_height() * 0.4))
+        self.middle_snow_report.setFixedHeight(int(get_height() * 0.25))
+        self.bottom_weather_forecast.setFixedHeight(int(get_height() * 0.37))
         self.layout.addWidget(self.top_weather_bar, alignment=Qt.AlignTop)
         self.layout.addWidget(self.middle_snow_report, alignment=Qt.AlignVCenter)
-        self.layout.addWidget(self.bottom_weather_forecast, alignment=Qt.AlignBottom)
+        self.layout.addWidget(self.bottom_weather_forecast, alignment=Qt.AlignTop)
+        self.setStyleSheet(load_stylesheet('weather_table.qss'))

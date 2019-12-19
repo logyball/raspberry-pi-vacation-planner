@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QLabel, QWidget
+from PyQt5.QtWidgets import QLabel, QWidget, QFrame
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
 from helpers.config import get_width, get_height
@@ -49,6 +49,7 @@ class WeatherTableRow(BaseHContainer):
         self.layout.addWidget(self.date, alignment=Qt.AlignHCenter)
         self.layout.addWidget(self.forecast, alignment=Qt.AlignHCenter)
         self.layout.addWidget(self.icon, alignment=Qt.AlignHCenter)
+        self.setFrameShape(QFrame.Panel)
 
     def _set_style(self):
         self.date.setObjectName('weatherRowDate')
@@ -80,7 +81,7 @@ class WeatherForecastTable(BaseVContainer):
             )
         for row in self.rows:
             self.layout.addWidget(row, alignment=Qt.AlignTop)
-            row.setFixedHeight(int(get_height() * 0.07))
+            row.setFixedHeight(int(get_height() * 0.065))
 
     def _set_style(self):
         self.header.setObjectName('weatherTableHeader')

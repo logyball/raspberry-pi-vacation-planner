@@ -1,11 +1,11 @@
 QLabel#curWeatherTemp {
-    font-size: 50px;
+    font-size: 68px;
     qproperty-alignment: AlignCenter;
     font-family: sans-serif;
 }
 
 QLabel#curWeatherLabel {
-    qproperty-text: "Current Temp:";
+    qproperty-text: "Current Temp";
     qproperty-alignment: AlignCenter;
     font-family: sans-serif;
 }
@@ -14,7 +14,6 @@ QLabel#todayWeatherReportLabel {
     font-size: 12px;
     qproperty-alignment: AlignCenter;
     font-family: sans-serif;
-    border-style: hidden;
 }
 
 QLabel#todayWeatherReportText {
@@ -42,6 +41,14 @@ QLabel#weatherRowDate {
 
 QLabel#weatherRowForecast {
     font-size: 12px;
-    qproperty-alignment: AlignLeft AlignHCenter;
+    qproperty-alignment: AlignLeft;
     font-family: sans-serif;
+}
+
+LeftSidebar {
+    border-style: hidden;
+    border-width: 1px;
+    padding-left: 1px;
+    padding-right: 1px;
+    padding-bottom: 2px;
 }

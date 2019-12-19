@@ -1,5 +1,5 @@
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QWidget, QLabel
+from PyQt5.QtWidgets import QWidget, QLabel, QFrame
 from PyQt5.QtCore import Qt
 from resources.BaseContainers import BaseVContainer
 from helpers.config import get_height, get_resort_proper_name
@@ -18,9 +18,10 @@ class SnowReport(BaseVContainer):
     def initUI(self, report: str, resort: str):
         self.label = QLabel(f"Today's Weather for {get_resort_proper_name(resort)}: ")
         self.label.setFixedHeight(int(get_height() * 0.05))
+        self.label.setFrameShape(QFrame.Panel)
         self.report = QLabel(report)
         self.report.setWordWrap(True)
-        self.report.setFixedHeight(int(get_height() * 0.5))
+        self.report.setFixedHeight(int(get_height() * 0.18))
         self.layout.addWidget(self.label, alignment=Qt.AlignTop)
         self.layout.addWidget(self.report, alignment=Qt.AlignBottom)
 
@@ -51,21 +52,13 @@ class CurrentIcon(QWidget):
         self.icon.setPixmap(self.pic_map)
 
 
-class CurrentTemp(BaseVContainer):
-    label: QLabel = None
-    temp: QLabel = None
-
+class CurrentTemp(QLabel):
     def __init__(self, parent=None, cur_temp=''):
         super(CurrentTemp, self).__init__(parent)
         self.initUI(cur_temp=cur_temp)
 
     def initUI(self, cur_temp):
-        self.label = QLabel()
-        self.temp = QLabel(cur_temp)
-        self.temp.setObjectName('curWeatherTemp')
-        self.label.setObjectName('curWeatherLabel')
-        self.label.setFixedHeight(int(get_height() * 0.03))
-        self.temp.setFixedHeight(int(get_height() * 0.22))
-        self.layout.addWidget(self.label, alignment=Qt.AlignTop)
-        self.layout.addWidget(self.temp, alignment=Qt.AlignBottom)
+        self.setText(cur_temp)
+        self.setObjectName('curWeatherTemp')
+        self.setFixedHeight(int(get_height() * 0.25))
         self.setStyleSheet(load_stylesheet('weather_table.qss'))

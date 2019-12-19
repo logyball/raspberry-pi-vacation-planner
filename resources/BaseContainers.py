@@ -13,7 +13,7 @@ class BaseVContainer(QFrame):
         self.layout = QVBoxLayout()
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.layout)
-        self.setFrameShape(QFrame.Panel)
+        # self.setFrameShape(QFrame.Panel)
 
 
 class BaseHContainer(QFrame):
@@ -24,7 +24,7 @@ class BaseHContainer(QFrame):
         self.layout = QHBoxLayout()
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.layout)
-        self.setFrameShape(QFrame.Panel)
+        # self.setFrameShape(QFrame.Panel)
 
 
 class BaseMainWindow(QMainWindow):
