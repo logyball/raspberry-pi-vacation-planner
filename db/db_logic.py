@@ -1,15 +1,11 @@
 import sqlite3
 from datetime import datetime
-from helpers.config import get_resort_driving, get_list_of_resorts
-from db.db_hardcoded_sql import (
-    enable_foreign_keys, create_main_driving_table, read_travel_info_driving,
-    create_main_flying_table, create_flying_segment_rel, create_segment_info_table,
-    write_flying_info, write_flight_segment, write_drive_info, check_driving_resort_current,
-    check_flying_resort_current, write_flight_rel_info, read_travel_info_flying,
-    check_flying_for_error
-)
-from helpers.travel import get_driving_to_resort_data_from_api, get_flying_to_resort_data_from_api
+from pprint import pprint
 
+from helpers.config import get_resort_driving, get_list_of_resorts
+from db.db_hardcoded_sql import *
+from helpers.travel import get_driving_to_resort_data_from_api, get_flying_to_resort_data_from_api
+from helpers.weather import get_weather_info_from_api
 
 def _get_cur_date_hour():
     cur_dt = datetime.now()
@@ -51,7 +47,7 @@ def _build_flight_info_dict(segments: list):
     }
 
 
-class BaseTravelDb(object):
+class BaseDb(object):
     source: str = None
     connection: sqlite3.Connection = None
     cursor: sqlite3.Cursor = None
@@ -63,16 +59,6 @@ class BaseTravelDb(object):
     def set_up_connection(self):
         self.connection = sqlite3.connect(self.source)
         self.cursor = self.connection.cursor()
-
-    def _check_driving_is_current(self, resort: str):
-        query_params = _check_currentness_query_params(resort)
-        self.cursor.execute(check_driving_resort_current, query_params)
-        return self._check_currentness_result()
-
-    def _check_flying_is_current(self, resort: str):
-        query_params = _check_currentness_query_params(resort)
-        self.cursor.execute(check_flying_resort_current, query_params)
-        return self._check_currentness_result()
 
     def _check_currentness_result(self):
         results = self.cursor.fetchone()
@@ -87,9 +73,81 @@ class BaseTravelDb(object):
         self.connection.close()
 
 
+class BaseWeatherDb(BaseDb):
+    def __init__(self, source=None):
+        super(BaseWeatherDb, self).__init__(source=source)
+
+    def _check_weather_is_current(self, resort: str):
+        query_params = _check_currentness_query_params(resort)
+        self.cursor.execute(check_weather_resort_current, query_params)
+        return self._check_currentness_result()
+
+
+class WeatherDbReader(BaseWeatherDb):
+    def __init__(self, source: str = None):
+        super(WeatherDbReader, self).__init__(source=source)
+
+    def get_weather_info(self, resort: str):
+        cur_dt = _get_cur_date_hour()
+        if self._check_weather_is_current(resort=resort):
+            return self._get_weather_from_db(resort, cur_dt)
+        print('getting weather from slow ass api')
+        return get_weather_info_from_api(resort)
+
+    def _get_weather_from_db(self, resort: str, cur_dt: tuple):
+        query_params = self._get_info_query_params(resort, cur_dt)
+        self.cursor.execute(read_weather_info, query_params)
+        forecast_segments = self.cursor.fetchall()
+        return self._build_weather_dict(forecast_segments)
+
+    def _build_weather_dict(self, forecast_segments: list):
+        today = {
+            'temp': forecast_segments[0][0],
+            'icon': forecast_segments[0][1],
+            'details': forecast_segments[0][2]
+        }
+        forecasts = []
+        for segment in forecast_segments:
+            forecasts.append({
+                'date': segment[3],
+                'day': segment[4],
+                'temp': segment[5],
+                'forecast': segment[6],
+                'icon': segment[7]
+            })
+        return {
+            'today': today,
+            'forecast': forecasts
+        }
+
+    def _get_info_query_params(self, resort: str, cur_dt: tuple):
+        self._get_cursor()
+        return {
+            'resort': resort,
+            'date': cur_dt[0],
+            'hour': cur_dt[1]
+        }
+
+
+class BaseTravelDb(BaseDb):
+
+    def __init__(self, source=None):
+        super(BaseTravelDb, self).__init__(source=source)
+
+    def _check_driving_is_current(self, resort: str):
+        query_params = _check_currentness_query_params(resort)
+        self.cursor.execute(check_driving_resort_current, query_params)
+        return self._check_currentness_result()
+
+    def _check_flying_is_current(self, resort: str):
+        query_params = _check_currentness_query_params(resort)
+        self.cursor.execute(check_flying_resort_current, query_params)
+        return self._check_currentness_result()
+
+
 class TravelDbReader(BaseTravelDb):
     def __init__(self, source=None):
-        super().__init__(source)
+        super(TravelDbReader, self).__init__(source)
 
     def get_travel_info(self, resort: str):
         cur_dt = _get_cur_date_hour()
@@ -148,19 +206,78 @@ class TravelDbReader(BaseTravelDb):
         return False
 
 
-class TravelDbBackgroundProcess(BaseTravelDb):
+class WeatherDbBackgroundProcess(BaseWeatherDb):
     resort_list: list = None
 
-    def __init__(self, source=None):
-        super().__init__(source)
-        self.source = source
+    def __init__(self, source: str = None):
+        super(WeatherDbBackgroundProcess, self).__init__(source)
         self.init_db()
         self.resort_list = get_list_of_resorts()
 
     def init_db(self):
         self.cursor.execute(enable_foreign_keys)
         self.connection.commit()
-        self.make_tables()  # todo - smarter way than if not exists
+        self.make_tables()
+
+    def make_tables(self):
+        self.cursor.execute(create_main_weather_table)
+        self.cursor.execute(create_weather_forecast_table)
+        self.connection.commit()
+
+    def update_resorts_check(self):
+        for resort in self.resort_list:
+            if not self._check_weather_is_current(resort):
+                print('weather not current')
+                weather_info = get_weather_info_from_api(resort)
+                self.add_weather_info(resort, weather_info)
+
+    def add_weather_info(self, resort: str, weather_info: dict):
+        cur_dt = _get_cur_date_hour()
+        insert_tup = (
+            resort,
+            cur_dt[0],
+            cur_dt[1],
+            weather_info.get('today', {}).get('temp', 'unknown temp'),
+            weather_info.get('today', {}).get('icon', ''),
+            weather_info.get('today', {}).get('details', 'unknown forecast')
+        )
+        self._get_cursor()
+        self.cursor.execute(write_main_weather_info, insert_tup)
+        self.connection.commit()
+        weather_id = self._get_last_inserted_id()
+        self._add_forecast_info(weather_entry_id=weather_id, forecast_info=weather_info)
+
+    def _add_forecast_info(self, weather_entry_id: int, forecast_info: dict):
+        for forecast in forecast_info.get('forecast', []):
+            insert_tup = (
+                forecast.get('date', 'unknown date'),
+                forecast.get('day', 'unknown day of week'),
+                forecast.get('temp', 'unknown temp'),
+                forecast.get('forecast', 'unknown forecast'),
+                forecast.get('icon', ''),
+                weather_entry_id
+            )
+            self.cursor.execute(write_weather_forecast_info, insert_tup)
+        self.connection.commit()
+
+    def _get_last_inserted_id(self):
+        self.cursor.execute("SELECT last_insert_rowid();")
+        last_id = self.cursor.fetchone()
+        return last_id[0]
+
+
+class TravelDbBackgroundProcess(BaseTravelDb):
+    resort_list: list = None
+
+    def __init__(self, source=None):
+        super(TravelDbBackgroundProcess, self).__init__(source)
+        self.init_db()
+        self.resort_list = get_list_of_resorts()
+
+    def init_db(self):
+        self.cursor.execute(enable_foreign_keys)
+        self.connection.commit()
+        self.make_tables()
 
     def make_tables(self):
         self.cursor.execute(create_main_driving_table)
@@ -261,9 +378,7 @@ class TravelDbBackgroundProcess(BaseTravelDb):
         self.cursor.execute(write_flying_info, flight_write_data)
         self.connection.commit()
 
-
     def _get_last_inserted_id(self):
         self.cursor.execute("SELECT last_insert_rowid();")
         last_id = self.cursor.fetchone()
         return last_id[0]
-

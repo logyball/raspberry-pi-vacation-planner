@@ -1,7 +1,9 @@
-from PyQt5.QtWidgets import QSizePolicy, QLabel
+from PyQt5.QtWidgets import QLabel
 from PyQt5.QtCore import Qt
-from helpers.weather import get_weather_info
-from helpers.config import get_width, get_height
+
+from db.db_logic import WeatherDbReader
+from helpers.weather import get_weather_info_from_api
+from helpers.config import get_width, get_height, get_db_path
 from resources.weather_widgets import CurrentTemp, CurrentIcon
 from resources.BaseContainers import BaseVContainer, BaseHContainer
 from resources.WeatherForecastTable import WeatherForecastTable
@@ -29,10 +31,12 @@ class LeftSidebar(BaseVContainer):
     top_weather_bar: WeatherBar = None
     middle_snow_report: QLabel = None
     bottom_weather_forecast: WeatherForecastTable = None
+    weather_db_reader: WeatherDbReader = None
 
     def __init__(self, parent=None, resort=""):
         super(LeftSidebar, self).__init__(parent)
-        weather_info = get_weather_info(resort)
+        self.weather_db_reader = WeatherDbReader(get_db_path())
+        weather_info = self.weather_db_reader.get_weather_info(resort)
         self.initUI(weather_info=weather_info)
 
     def initUI(self, weather_info):

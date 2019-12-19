@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from helpers.config import get_resort_coordinates, get_weather_url
 from datetime import datetime, timezone
 from requests import get
@@ -10,10 +12,10 @@ import dateutil.parser
 BASE_WEATHER_URL = get_weather_url()
 
 
-def get_weather_info(resort_name, num_days=5):
+def get_weather_info_from_api(resort_name, num_days=5):
     latitude, longitude = get_resort_coordinates(resort_name)
     resort_gps_url = "".join([BASE_WEATHER_URL, latitude, ",", longitude])
-    res_dict = get(resort_gps_url).json()  # TODO - error handling
+    res_dict = get(resort_gps_url).json()
     forecast_url = res_dict.get('properties', {}).get('forecast', None)
     if forecast_url:
         forecast = get(forecast_url).json()
