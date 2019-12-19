@@ -1,8 +1,8 @@
 db_path: 'database.db'
 base_weather_url: 'https://api.weather.gov/points/'
 screen_size:
-  height: 960
-  width: 1600
+  height: 480
+  width: 800
 resorts:
   killington:
     name: 'Killington'
