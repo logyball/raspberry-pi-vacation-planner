@@ -9,7 +9,6 @@ resorts:
     latitude: '43.617'
     longitude: '-72.803'
     driving: True
-    airport: RUT
     nonstop: 'True'
     stream: 'https://img.hdrelay.com/frames/a0de9878-d7b7-4906-9e83-536fde35c8a9/default/last.jpg'
   steamboat:
@@ -33,3 +32,17 @@ resorts:
     airport: SLC
     nonstop: ''
     stream: 'https://img.hdrelay.com/frames/8611e276-7ee5-42c0-b8cd-d9e1890e1cd4/default/last.jpg'
+  stratton:
+    name: 'Stratton'
+    latitude: '43.113'
+    longitude: '-72.908'
+    driving: 'True'
+    nonstop: ''
+    stream: 'https://img.youtube.com/vi/3B_ODJiExKU/maxresdefault.jpg'
+  alta:
+    name: 'Alta'
+    latitude: '40.588'
+    longitude: '-111.635'
+    airport: 'SLC'
+    nonstop: 'True'
+    stream: 'https://media.alta.com/resources/mtncam/Superior.jpg'
