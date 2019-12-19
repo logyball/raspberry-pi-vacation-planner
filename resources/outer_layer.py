@@ -1,41 +1,14 @@
-from PyQt5.QtWidgets import QWidget, QSizePolicy, QPushButton, QMainWindow
-from PyQt5.QtCore import Qt, QObject, pyqtSignal
+from PyQt5.QtWidgets import QWidget, QSizePolicy
+from PyQt5.QtCore import Qt
 from resources import left_sidebar, right_sidebar
 from resources.BaseContainers import BaseHContainer
-from helpers.testing_utils import set_random_background_color
+from resources.scroll_bar import ScrollLeftButton, ScrollRightButton, ScrollIndexButtonContainer
 from helpers.config import get_width
-
-
-class ScrollButton(QPushButton):
-    base_window: QMainWindow = None
-
-    def __init__(self, parent=None):
-        super(ScrollButton, self).__init__(parent)
-
-
-class ScrollLeftButton(ScrollButton):
-    def __init__(self, parent=None, base_window=None):
-        super(ScrollButton, self).__init__(parent)
-        self.setText("<")
-        self.base_window = base_window
-
-    def mousePressEvent(self, event):
-        self.base_window.move_left.emit()
-
-
-class ScrollRightButton(ScrollButton):
-    def __init__(self, parent=None, base_window=None):
-        super(ScrollButton, self).__init__(parent)
-        self.setText(">")
-        self.base_window = base_window
-
-    def mousePressEvent(self, event):
-        self.base_window.move_right.emit()
 
 
 class BottomBar(BaseHContainer):
     left: QWidget = None
-    middle: QWidget = None
+    middle: ScrollIndexButtonContainer = None
     right: QWidget = None
 
     def __init__(self, parent=None):
@@ -44,14 +17,12 @@ class BottomBar(BaseHContainer):
 
     def initUI(self, base_window):
         self.left = ScrollLeftButton(parent=self, base_window=base_window)
-        self.middle = QWidget()
+        self.middle = ScrollIndexButtonContainer(parent=self, base_window=base_window)
         self.right = ScrollRightButton(parent=self, base_window=base_window)
         self.left.setMinimumWidth(int(get_width() * 0.05))
         self.middle.setMinimumWidth(int(get_width() * 0.89))
         self.middle.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.right.setMinimumWidth(int(get_width() * 0.05))
-        for w in (self.left, self.middle, self.right):
-            set_random_background_color(w)
         self.layout.addWidget(self.left, alignment=Qt.AlignLeft)
         self.layout.addWidget(self.middle,  alignment=Qt.AlignHCenter)
         self.layout.addWidget(self.right, alignment=Qt.AlignRight)

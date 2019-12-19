@@ -1,17 +1,11 @@
-from PyQt5.QtWidgets import (
-    QApplication, QVBoxLayout, QMainWindow, QWidget, QSizePolicy
-)
+from PyQt5.QtWidgets import QWidget, QSizePolicy
 from PyQt5.QtCore import Qt, pyqtSignal
-from sys import argv
 from resources.outer_layer import BottomBar, CentralBar
 from resources.BaseContainers import BaseMainWindow
-from helpers.config import get_width, get_height, get_db_path
+from helpers.config import get_height
 from helpers.scrolling_resort_list import ResortMasterList
-from helpers.threading_functions import cntdown_timer
 from db.db_logic import TravelDbReader
-from db.db_daemon import db_daemon
 from time import time
-from threading import Thread
 
 
 class MainWindow(BaseMainWindow):
@@ -49,6 +43,12 @@ class MainWindow(BaseMainWindow):
         self.layout.addWidget(bb, alignment=Qt.AlignBottom)
         self._set_timer()
 
+    def get_cur_index(self):
+        return self.resorts.cur_index
+
+    def get_num_resorts(self):
+        return self.resorts.num_resorts
+
     def _move_left_handler(self):
         self.clearUI()
         self.initUI()
@@ -61,15 +61,3 @@ class MainWindow(BaseMainWindow):
 
     def _set_timer(self):
         self.time_to_move = int(time()) + 60
-
-
-if __name__ == '__main__':
-    db_watcher = Thread(target=db_daemon, args=(get_db_path(),), daemon=True)
-    db_watcher.start()
-    argv.append("--disable-web-security")
-    app = QApplication(argv)
-    window = MainWindow()
-    window.show()
-    timer = Thread(target=cntdown_timer, args=(window,), daemon=True)
-    timer.start()
-    app.exec_()
