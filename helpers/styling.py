@@ -1,4 +1,3 @@
-from PyQt5.QtCore import QFile
 from os.path import sep
 from os import getcwd
 

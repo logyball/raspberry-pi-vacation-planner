@@ -15,6 +15,7 @@ if __name__ == '__main__':
     argv.append("--disable-web-security")
     app = QApplication(argv)
     window = MainWindow()
+    window.setWindowTitle('Vacation Planning Assistant')
     window.show()
     timer = Thread(target=cntdown_timer, args=(window,), daemon=True)
     timer.start()

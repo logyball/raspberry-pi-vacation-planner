@@ -1,5 +1,5 @@
 QLabel#curWeatherTemp {
-    font-size: 60px;
+    font-size: 50px;
     qproperty-alignment: AlignCenter;
     font-family: sans-serif;
 }
@@ -12,7 +12,7 @@ QLabel#curWeatherLabel {
 
 QLabel#todayWeatherReportLabel {
     font-size: 12px;
-    qproperty-alignment: AlignLeft;
+    qproperty-alignment: AlignCenter;
     font-family: sans-serif;
     border-style: hidden;
 }
@@ -21,5 +21,27 @@ QLabel#todayWeatherReportText {
     font-size: 12px;
     font-weight: bold;
     qproperty-alignment: AlignLeft;
+    font-family: sans-serif;
+}
+
+QLabel#weatherTableHeader {
+    font-size: 12px;
+    font-weight: bold;
+    qproperty-alignment: AlignCenter;
+    font-family: sans-serif;
+}
+
+QLabel#weatherRowDate {
+    font-size: 10px;
+    font-weight: bold;
+    qproperty-alignment: AlignCenter;
+    font-family: sans-serif;
+    border-style: solid;
+    border-width: 1px;
+}
+
+QLabel#weatherRowForecast {
+    font-size: 12px;
+    qproperty-alignment: AlignLeft AlignHCenter;
     font-family: sans-serif;
 }
