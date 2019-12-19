@@ -2,15 +2,16 @@ from yaml import load, FullLoader
 from functools import lru_cache
 
 CONFIG_FILE_PATH = 'config.yaml'
+SECRETS_FILE_PATH = 'secrets.yaml'
 
 
 def get_maps_key():
-    return _get_config().get("keys", {}).get("google_maps")
+    return _get_secrets().get("keys", {}).get("google_maps")
 
 
 def get_amadeus_keys():
-    key = _get_config().get("keys", {}).get("amadeus_key")
-    secret = _get_config().get("keys", {}).get("amadeus_secret")
+    key = _get_secrets().get("keys", {}).get("amadeus_key")
+    secret = _get_secrets().get("keys", {}).get("amadeus_secret")
     return key, secret
 
 
@@ -19,11 +20,11 @@ def get_weather_url():
 
 
 def get_origin_coordinates():
-    origin = _get_config().get('origin', {})
+    origin = _get_secrets().get('origin', {})
     return origin.get('latitude', ''), origin.get('longitude', '')
 
 
-def get_resort_driving(resort_name):
+def get_resort_driving(resort_name: str):
     resort = _get_individual_resort(resort_name)
     return bool(resort.get('driving', False))
 
@@ -40,16 +41,12 @@ def get_resort_coordinates(resort_name):
 
 
 def get_airlines_pref():
-    prefs = _get_config().get('preferences', {})
+    prefs = _get_secrets().get('preferences', {})
     return prefs.get('airlines', '')
 
 
-def get_origin_zipcode():
-    return _get_config().get('origin', {}).get('zip', '10001')
-
-
 def get_origin_airport():
-    return _get_config().get('origin', {}).get('airport', 'NYC')
+    return _get_secrets().get('origin', {}).get('airport', 'NYC')
 
 
 def get_width():
@@ -73,6 +70,11 @@ def get_db_path():
     return _get_config().get('db_path')
 
 
+def get_stream_path(resort_name: str):
+    resort = _get_individual_resort(resort_name)
+    return resort.get('stream')
+
+
 @lru_cache(maxsize=4)
 def _get_resorts():
     return _get_config().get('resorts', {})
@@ -83,3 +85,10 @@ def _get_config():
     with open(CONFIG_FILE_PATH) as c_file:
         config_dict = load(c_file.read(), Loader=FullLoader)
     return config_dict
+
+
+@lru_cache(maxsize=4)
+def _get_secrets():
+    with open(SECRETS_FILE_PATH) as c_file:
+        secrets = load(c_file.read(), Loader=FullLoader)
+    return secrets

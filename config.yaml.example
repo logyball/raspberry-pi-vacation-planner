@@ -1,8 +1,4 @@
 db_path: 'test.db'
-keys:
-  amadeus_key: CHANGEME
-  amadeus_secret: CHANGEME
-  google_maps: CHANGEME
 base_weather_url: 'https://api.weather.gov/points/'
 screen_size:
   height: 480

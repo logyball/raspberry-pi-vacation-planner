@@ -1,5 +1,72 @@
-
 enable_foreign_keys = "PRAGMA foreign_keys = ON;"
+
+create_main_weather_table = """
+    CREATE TABLE IF NOT EXISTS weather
+    (
+    entry_id INTEGER PRIMARY KEY,
+    resort TEXT, 
+    date TEXT, 
+    hour INTEGER,
+    temp TEXT,
+    today_icon_path TEXT,
+    today_forecast TEXT
+    );
+    """
+
+create_weather_forecast_table = """
+    CREATE TABLE IF NOT EXISTS weather_forecast
+    (
+    forecast_entry_id INTEGER PRIMARY KEY,
+    forecast_date TEXT,
+    forecast_day_of_week TEXT,
+    forecast_temp TEXT,
+    future_forecast TEXT,
+    forecast_icon_path TEXT,
+    weather_entry_id INTEGER,
+    FOREIGN KEY(weather_entry_id) REFERENCES weather(entry_id)
+    );
+    """
+
+
+check_weather_resort_current = """
+    SELECT COUNT(*)
+    FROM weather
+    WHERE resort = :resort
+    AND date = :date
+    AND hour = :hour;
+"""
+
+write_main_weather_info = """
+    INSERT INTO weather
+    (resort, date, hour, temp, today_icon_path, today_forecast)
+    VALUES
+    (?, ?, ?, ?, ?, ?);
+"""
+
+write_weather_forecast_info = """
+    INSERT INTO weather_forecast
+    (forecast_date, forecast_day_of_week, forecast_temp, future_forecast, forecast_icon_path, weather_entry_id)
+    VALUES
+    (?, ?, ?, ?, ?, ?);
+"""
+
+read_weather_info = """
+    SELECT temp, today_icon_path, today_forecast, forecast_date, forecast_day_of_week, forecast_temp, future_forecast, forecast_icon_path
+    FROM weather
+    INNER JOIN weather_forecast wf ON weather.entry_id = wf.weather_entry_id
+    WHERE date = :date
+    AND hour = :hour
+    AND resort = :resort
+"""
+
+
+
+
+
+
+
+
+
 
 create_main_driving_table = """
     CREATE TABLE IF NOT EXISTS driving

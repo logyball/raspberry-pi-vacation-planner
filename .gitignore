@@ -1,5 +1,6 @@
 venv
 .idea
-config.yaml
+secrets.yaml
 __pycache__
 *.db
+*.bak

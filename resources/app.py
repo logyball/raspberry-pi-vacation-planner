@@ -4,7 +4,7 @@ from resources.outer_layer import BottomBar, CentralBar
 from resources.BaseContainers import BaseMainWindow
 from helpers.config import get_height
 from helpers.scrolling_resort_list import ResortMasterList
-from db.db_logic import TravelDbReader
+from db.db_logic import TravelDbReader, WeatherDbReader
 from time import time
 
 
@@ -13,7 +13,6 @@ class MainWindow(BaseMainWindow):
     central_widget: QWidget = None
     move_left = pyqtSignal()
     move_right = pyqtSignal()
-    db_reader: TravelDbReader = None
     time_to_move: int = None
 
     def __init__(self, parent=None):

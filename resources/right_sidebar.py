@@ -1,14 +1,29 @@
+from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
 from PyQt5.QtWidgets import QWidget, QSizePolicy, QLabel
-from PyQt5.QtCore import Qt
-from resources.BaseContainers import BaseHContainer, BaseVContainer
+from PyQt5.QtCore import Qt, QUrl
+from resources.BaseContainers import BaseVContainer
 from resources.travel_widgets import TravelInfo, travel_info_stupid_factory
-from helpers.config import get_width, get_height
-from helpers.testing_utils import set_random_background_color
+from helpers.config import get_height, get_stream_path, get_width
+
+
+class CurrentLiveStream(QWebEngineView):
+    url: QUrl = None
+
+    def __init__(self, parent: QWidget = None, resort: str = None):
+        super(CurrentLiveStream, self).__init__(parent)
+        self.url = QUrl(get_stream_path(resort_name=resort))
+        self.initUI(parent=parent)
+
+    def initUI(self, parent: QWidget):
+        self.setFixedWidth(get_width() * 0.7)
+        self.setFixedHeight(parent.height())
+        self.load(self.url)
+        self.triggerPageAction(QWebEnginePage.ReloadAndBypassCache)
 
 
 class ResortInfo(BaseVContainer):
     top_resort_name: QWidget = None
-    middle_live_stream: QWidget = None
+    middle_live_stream: CurrentLiveStream = None
     bottom_travel_info: TravelInfo = None
 
     def __init__(self, parent=None, resort='None'):
@@ -17,12 +32,10 @@ class ResortInfo(BaseVContainer):
 
     def initUI(self, resort):
         self.top_resort_name = QLabel(resort, parent=self)
-        self.middle_live_stream = QWidget(parent=self)
+        self.middle_live_stream = CurrentLiveStream(parent=self, resort=resort)
         self.bottom_travel_info = travel_info_stupid_factory(resort, parent=self)
         self.set_sizes()
         self.set_positions()
-        for w in (self.middle_live_stream,):
-            set_random_background_color(w)
 
     def set_positions(self):
         self.layout.addWidget(self.top_resort_name, alignment=Qt.AlignTop)
