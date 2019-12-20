@@ -11,3 +11,4 @@ python-dotenv==0.10.3
 six==1.13.0
 urllib3==1.25.7
 googlemaps==v3.1.4
+supervisor==4.1.0
