@@ -84,15 +84,25 @@ def _in_two_weekends_flights(prefs):
     am_cli = prefs.get('amadeus_cli')
     thursday, sunday = _get_travel_dates()
     try:
-        flights = am_cli.shopping.flight_offers.get(
-            origin=prefs.get('orig_airport'),
-            destination=prefs.get('res_airpot'),
-            departureDate=thursday,
-            returnDate=sunday,
-            nonStop=prefs.get('nonstop', False),
-            includeAirlines=prefs.get('airlines', 'UA'),
-            currency='USD'
-        )
+        if prefs.get('airlines'):
+            flights = am_cli.shopping.flight_offers.get(
+                origin=prefs.get('orig_airport'),
+                destination=prefs.get('res_airpot'),
+                departureDate=thursday,
+                returnDate=sunday,
+                nonStop=prefs.get('nonstop', False),
+                includeAirlines=prefs.get('airlines', 'UA'),
+                currency='USD'
+            )
+        else:
+            flights = am_cli.shopping.flight_offers.get(
+                origin=prefs.get('orig_airport'),
+                destination=prefs.get('res_airpot'),
+                departureDate=thursday,
+                returnDate=sunday,
+                nonStop=prefs.get('nonstop', False),
+                currency='USD'
+            )
         best_flight = _get_best_flight(flights.data)
     except Exception as e:
         print(e)  # TODO - logging

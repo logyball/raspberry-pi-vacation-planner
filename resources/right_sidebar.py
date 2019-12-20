@@ -1,5 +1,5 @@
 from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
-from PyQt5.QtWidgets import QWidget, QSizePolicy, QLabel
+from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5.QtCore import Qt, QUrl
 
 from helpers.styling import load_stylesheet
