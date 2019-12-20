@@ -1,0 +1,91 @@
+QLabel#driveTimeLabel {
+    font-size: 14px;
+    qproperty-alignment: AlignCenter;
+    font-family: "Arial Black";
+}
+
+QLabel#driveTimeValue {
+    font-size: 36px;
+    qproperty-alignment: AlignCenter;
+    font-family: Serif;
+}
+
+QLabel#driveDistanceLabel {
+    font-size: 14px;
+    qproperty-alignment: AlignCenter;
+    font-family: "Arial Black";
+}
+
+QLabel#driveDistanceValue {
+    font-size: 36px;
+    qproperty-alignment: AlignCenter;
+    font-family: Serif;
+}
+
+DriveTime {
+    border-style: solid;
+    border-width: 1px;
+    padding: 1px;
+}
+
+DriveDistance {
+    border-style: solid;
+    border-width: 1px;
+    padding: 1px;
+}
+
+FlightPriceContainer {
+    border-style: solid;
+    border-width: 3px;
+    border-radius: 10px;
+}
+
+QLabel#flightPriceLabel {
+    font-weight: bold;
+}
+
+QLabel#flightDirection {
+    font-weight: bold;
+}
+
+QLabel#flightPriceValue {
+    font-size: 20px;
+    qproperty-alignment: AlignCenter;
+    font-family: Serif;
+}
+
+QLabel#flightPriceValueGood {
+    color: green;
+    font-size: 20px;
+    qproperty-alignment: AlignCenter;
+    font-family: Serif;
+}
+
+QLabel#flightPriceValueBad {
+    color: red;
+    font-size: 20px;
+    qproperty-alignment: AlignCenter;
+    font-family: Serif;
+}
+
+QLabel#flightAbsoluteLocationAirport {
+    font-size: 20px;
+    qproperty-alignment: AlignCenter;
+    font-family: Serif;
+}
+
+QLabel#flightAbsoluteLocationTime {
+    font-size: 10px;
+    qproperty-alignment: AlignCenter;
+    font-family: Serif;
+}
+
+FlightSegment {
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+FlightAbsoluteLocation {
+    border-style: hidden;
+    border-width: 1px;
+}

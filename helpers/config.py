@@ -75,6 +75,11 @@ def get_stream_path(resort_name: str):
     return resort.get('stream')
 
 
+def get_resort_proper_name(resort_name: str):
+    resort = _get_individual_resort(resort_name)
+    return resort.get('name')
+
+
 @lru_cache(maxsize=4)
 def _get_resorts():
     return _get_config().get('resorts', {})

@@ -1,8 +1,6 @@
-from time import sleep
-
 from PyQt5.QtWidgets import QApplication
 from sys import argv
-from helpers.config import  get_db_path
+from helpers.config import get_db_path
 from helpers.threading_functions import cntdown_timer
 from resources.app import MainWindow
 from db.db_daemon import db_weather_daemon, db_travel_daemon
@@ -17,6 +15,7 @@ if __name__ == '__main__':
     argv.append("--disable-web-security")
     app = QApplication(argv)
     window = MainWindow()
+    window.setWindowTitle('Vacation Planning Assistant')
     window.show()
     timer = Thread(target=cntdown_timer, args=(window,), daemon=True)
     timer.start()

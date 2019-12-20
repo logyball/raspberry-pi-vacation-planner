@@ -1,9 +1,11 @@
 from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
 from PyQt5.QtWidgets import QWidget, QSizePolicy, QLabel
 from PyQt5.QtCore import Qt, QUrl
+
+from helpers.styling import load_stylesheet
 from resources.BaseContainers import BaseVContainer
 from resources.travel_widgets import TravelInfo, travel_info_stupid_factory
-from helpers.config import get_height, get_stream_path, get_width
+from helpers.config import get_height, get_stream_path, get_width, get_resort_proper_name
 
 
 class CurrentLiveStream(QWebEngineView):
@@ -22,20 +24,21 @@ class CurrentLiveStream(QWebEngineView):
 
 
 class ResortInfo(BaseVContainer):
-    top_resort_name: QWidget = None
+    top_resort_name: QLabel = None
     middle_live_stream: CurrentLiveStream = None
     bottom_travel_info: TravelInfo = None
 
-    def __init__(self, parent=None, resort='None'):
+    def __init__(self, parent: QWidget = None, resort: str = None):
         super(ResortInfo, self).__init__(parent)
         self.initUI(resort=resort)
 
-    def initUI(self, resort):
-        self.top_resort_name = QLabel(resort, parent=self)
+    def initUI(self, resort: str):
+        self.top_resort_name = QLabel(get_resort_proper_name(resort))
         self.middle_live_stream = CurrentLiveStream(parent=self, resort=resort)
         self.bottom_travel_info = travel_info_stupid_factory(resort, parent=self)
         self.set_sizes()
         self.set_positions()
+        self._set_style()
 
     def set_positions(self):
         self.layout.addWidget(self.top_resort_name, alignment=Qt.AlignTop)
@@ -43,7 +46,10 @@ class ResortInfo(BaseVContainer):
         self.layout.addWidget(self.bottom_travel_info, alignment=Qt.AlignBottom)
 
     def set_sizes(self):
-        self.top_resort_name.setFixedHeight(int(get_height() * 0.10))
-        self.middle_live_stream.setMinimumHeight(int(get_height() * 0.65))
-        self.middle_live_stream.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.top_resort_name.setFixedHeight(int(get_height() * 0.12))
+        self.middle_live_stream.setFixedHeight(int(get_height() * 0.63))
         self.bottom_travel_info.setFixedHeight(int(get_height() * 0.18))
+
+    def _set_style(self):
+        self.top_resort_name.setObjectName('resortOfficialTitle')
+        self.setStyleSheet(load_stylesheet('resort_info.qss'))

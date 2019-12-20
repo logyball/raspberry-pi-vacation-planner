@@ -1,5 +1,3 @@
-from pprint import pprint
-
 from helpers.config import get_resort_coordinates, get_weather_url
 from datetime import datetime, timezone
 from requests import get
@@ -65,7 +63,7 @@ def _get_forecast(weather_periods, num_days):  # todo - hardcode num of days to 
 
 
 def _get_temp(details):
-    return ''.join([str(details.get("temperature")), details.get("temperatureUnit")])
+    return ''.join([str(details.get("temperature")), "°"])
 
 
 def _get_wind(details):

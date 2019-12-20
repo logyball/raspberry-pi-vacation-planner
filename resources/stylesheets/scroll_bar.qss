@@ -1,0 +1,18 @@
+QPushButton#selectedScrollButton {
+    font-size: x-large;
+    font-weight: bold;
+    border-style: hidden;
+}
+
+QPushButton#scrollButton {
+    font-size: small;
+    border-style: hidden;
+}
+
+QPushButton#leftRightButton {
+    border-width: 2px;
+}
+
+ScrollIndexButtonContainer {
+    border-style: hidden;
+}

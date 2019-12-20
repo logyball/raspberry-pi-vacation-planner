@@ -1,0 +1,16 @@
+QLabel#resortOfficialTitle {
+    font-size: 44px;
+    qproperty-alignment: AlignCenter;
+    font-family: "Arial Black";
+    border-style: hidden;
+    border-width: 1px;
+}
+
+ResortInfo {
+    border-style: hidden;
+    border-width: 1px;
+    border-radius: 4px;
+    padding-left: 1px;
+    padding-right: 3px;
+    padding-bottom: 2px;
+}

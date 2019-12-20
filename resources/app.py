@@ -4,7 +4,6 @@ from resources.outer_layer import BottomBar, CentralBar
 from resources.BaseContainers import BaseMainWindow
 from helpers.config import get_height
 from helpers.scrolling_resort_list import ResortMasterList
-from db.db_logic import TravelDbReader, WeatherDbReader
 from time import time
 
 
@@ -13,6 +12,7 @@ class MainWindow(BaseMainWindow):
     central_widget: QWidget = None
     move_left = pyqtSignal()
     move_right = pyqtSignal()
+    move_to_index = pyqtSignal(int)
     time_to_move: int = None
 
     def __init__(self, parent=None):
@@ -20,6 +20,7 @@ class MainWindow(BaseMainWindow):
         self.resorts = ResortMasterList()
         self.move_left.connect(self._move_left_handler)
         self.move_right.connect(self._move_right_handler)
+        self.move_to_index.connect(self._move_to_index_handler)
         self.initUI()
         self.paintUI(resort=self.resorts.get_resort_at_index(0))
 
@@ -33,13 +34,13 @@ class MainWindow(BaseMainWindow):
             self.layout.itemAt(i).widget().setParent(None)
 
     def paintUI(self, resort: str):
-        cb = CentralBar(parent=self, resort=resort)
-        cb.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        cb.setFixedHeight(int(get_height() * 0.95))
-        bb = BottomBar(parent=self)
-        bb.setFixedHeight(int(get_height() * 0.05))
-        self.layout.addWidget(cb, alignment=Qt.AlignVCenter)
-        self.layout.addWidget(bb, alignment=Qt.AlignBottom)
+        main_info = CentralBar(parent=self, resort=resort)
+        main_info.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        main_info.setFixedHeight(int(get_height() * 0.95))
+        scroll_bar = BottomBar(parent=self)
+        scroll_bar.setFixedHeight(int(get_height() * 0.05))
+        self.layout.addWidget(main_info, alignment=Qt.AlignVCenter)
+        self.layout.addWidget(scroll_bar, alignment=Qt.AlignBottom)
         self._set_timer()
 
     def get_cur_index(self):
@@ -57,6 +58,11 @@ class MainWindow(BaseMainWindow):
         self.clearUI()
         self.initUI()
         self.paintUI(self.resorts.get_next_resort())
+
+    def _move_to_index_handler(self, index: int = None):
+        self.clearUI()
+        self.initUI()
+        self.paintUI(self.resorts.get_resort_at_index(index))
 
     def _set_timer(self):
         self.time_to_move = int(time()) + 60

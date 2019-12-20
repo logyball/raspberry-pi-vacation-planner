@@ -3,8 +3,9 @@ from dateutil import parser
 from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5.QtCore import Qt
 from db.db_logic import TravelDbReader
+from helpers.styling import load_stylesheet
 from resources.BaseContainers import BaseHContainer, BaseVContainer
-from helpers.config import get_width, get_db_path
+from helpers.config import get_width, get_db_path, get_height
 
 
 def travel_info_stupid_factory(resort, parent=None):
@@ -20,21 +21,58 @@ class TravelInfo(BaseHContainer):
         super(TravelInfo, self).__init__(parent)
 
 
-class TravelInfoDriving(TravelInfo):
-    left_drive_time: QWidget = None
-    right_driving_distance: QWidget = None
+class DriveDistance(BaseVContainer):
+    label: QLabel = None
+    distance: QLabel = None
 
-    def __init__(self, travel_info=None, parent=None):
+    def __init__(self, parent: QWidget = None, distance: str = None):
+        super(DriveDistance, self).__init__(parent)
+        self.label = QLabel('Driving Distance')
+        self.time = QLabel(distance)
+        self._set_style()
+
+    def _set_style(self):
+        self.label.setObjectName('driveDistanceLabel')
+        self.time.setObjectName('driveDistanceValue')
+        self.time.setFixedHeight(int(get_height() * 0.15))
+        self.layout.addWidget(self.time, alignment=Qt.AlignBottom)
+        self.layout.addWidget(self.label, alignment=Qt.AlignBottom)
+        self.setStyleSheet(load_stylesheet('travel_styles.qss'))
+
+
+class DriveTime(BaseVContainer):
+    label: QLabel = None
+    time: QLabel = None
+
+    def __init__(self, parent: QWidget = None, time: str = None):
+        super(DriveTime, self).__init__(parent)
+        self.label = QLabel('Current Driving Time')
+        self.time = QLabel(time)
+        self._set_style()
+
+    def _set_style(self):
+        self.label.setObjectName('driveTimeLabel')
+        self.time.setObjectName('driveTimeValue')
+        self.time.setFixedHeight(int(get_height() * 0.15))
+        self.layout.addWidget(self.time, alignment=Qt.AlignBottom)
+        self.layout.addWidget(self.label, alignment=Qt.AlignBottom)
+        self.setStyleSheet(load_stylesheet('travel_styles.qss'))
+
+
+class TravelInfoDriving(TravelInfo):
+    left_drive_time: DriveTime = None
+    right_driving_distance: DriveDistance = None
+
+    def __init__(self, travel_info: dict = None, parent: QWidget = None):
         super(TravelInfoDriving, self).__init__(parent)
         self.initUI(travel_info=travel_info.get('info'))
 
-    def initUI(self, travel_info):
-        self.left_drive_time = QLabel("Driving time: " + travel_info.get('time'))
-        self.right_driving_distance = QLabel("Driving distance: " + travel_info.get('distance'))
-        for w in (self.left_drive_time, self.right_driving_distance):
-            w.setWordWrap(True)
+    def initUI(self, travel_info: dict):
+        self.left_drive_time = DriveTime(parent=self, time=travel_info.get('time'))
+        self.right_driving_distance = DriveDistance(parent=self, distance=travel_info.get('distance'))
         self.set_sizes()
         self.set_positions()
+        self.setStyleSheet(load_stylesheet('travel_styles.qss'))
 
     def set_sizes(self):
         self.left_drive_time.setMinimumWidth(int(get_width() * 0.35))
@@ -45,46 +83,69 @@ class TravelInfoDriving(TravelInfo):
         self.layout.addWidget(self.right_driving_distance, alignment=Qt.AlignRight)
 
 
-class TravelInfoFlying(TravelInfo):
-    left_depart_flight: BaseHContainer = None
-    middle_return_flight: BaseHContainer = None
-    right_flying_price: QWidget = None
+class FlightPriceContainer(BaseVContainer):
+    bottom_label: QLabel = None
+    flight_price: QLabel = None
 
-    def __init__(self, travel_info=None, parent=None):
-        super(TravelInfoFlying, self).__init__(parent)
-        self.initUI(travel_info=travel_info.get('info'))
-
-    def initUI(self, travel_info):
-        self.left_depart_flight = FlightSegmentsInfo(parent=self, flight_segments_info=travel_info.get('depart'), direction='depart')
-        self.middle_return_flight = FlightSegmentsInfo(parent=self, flight_segments_info=travel_info.get('return'), direction='return')
-        self.right_flying_price = QLabel(str(travel_info.get('price')))
-        self.set_sizes()
-        self.set_positions()
-
-    def set_sizes(self):
-        self.left_depart_flight.setMinimumWidth(int(get_width() * 0.3))
-        self.middle_return_flight.setMinimumWidth(int(get_width() * 0.3))
-        self.right_flying_price.setMinimumWidth(int(get_width() * 0.10))
-
-    def set_positions(self):
-        self.layout.addWidget(self.left_depart_flight, alignment=Qt.AlignLeft)
-        self.layout.addWidget(self.middle_return_flight, alignment=Qt.AlignHCenter)
-        self.layout.addWidget(self.right_flying_price, alignment=Qt.AlignRight)
+    def __init__(self, parent: QWidget = None, price: float = None):
+        super(FlightPriceContainer, self).__init__(parent)
+        self.bottom_label = QLabel('Price')
+        self.flight_price = QLabel(f"${price:.0f}")
+        if price < 350:
+            self.flight_price.setObjectName('flightPriceValueGood')
+        elif price > 900:
+            self.flight_price.setObjectName('flightPriceValueBad')
+        else:
+            self.flight_price.setObjectName('flightPriceValue')
+        self.bottom_label.setObjectName('flightPriceLabel')
+        self.flight_price.setFixedHeight(int(get_height() * 0.15))
+        self.layout.addWidget(self.flight_price, alignment=Qt.AlignHCenter)
+        self.layout.addWidget(self.bottom_label, alignment=Qt.AlignHCenter)
 
 
-class FlightSegmentsInfo(BaseVContainer):
-    direction: QLabel = None
-    flights: BaseHContainer = None
+class FlightAbsoluteLocation(BaseVContainer):
+    airport: QLabel = None
+    time: QLabel = None
 
-    def __init__(self, parent=None, flight_segments_info=None, direction=None):
-        super(FlightSegmentsInfo, self).__init__(parent)
-        self.initUI(flight_segments_info=flight_segments_info, direction=direction)
+    def __init__(self, parent: QWidget = None, airport: str = None, time: datetime = None):
+        super(FlightAbsoluteLocation, self).__init__(parent)
+        self.airport = QLabel(airport)
+        self.time = QLabel(time.strftime("%m/%d\n%H:%M"))
+        self.initUI()
 
-    def initUI(self, flight_segments_info, direction):
-        self.direction = QLabel(direction)
-        self.flights = FlightSegments(parent=self, flight_segments_info=flight_segments_info)
-        self.layout.addWidget(self.direction, alignment=Qt.AlignTop)
-        self.layout.addWidget(self.flights, alignment=Qt.AlignBottom, stretch=1)
+    def initUI(self):
+        self.airport.setObjectName('flightAbsoluteLocationAirport')
+        self.time.setObjectName('flightAbsoluteLocationTime')
+        self.time.setWordWrap(True)
+        self.layout.addWidget(self.airport)
+        self.layout.addWidget(self.time)
+
+
+class FlightSegment(BaseHContainer):
+    flightOrigin: FlightAbsoluteLocation = None
+    flightDestination: FlightAbsoluteLocation = None
+    departAt: datetime = None
+    departFrom: str = None
+    flightArrow: QLabel = None
+    arriveAt: datetime = None
+    arriveIn: str = None
+
+    def __init__(self, parent: QWidget = None, flight_segment_info=None):
+        super(FlightSegment, self).__init__(parent)
+        self.departAt = parser.parse(flight_segment_info.get('departAt'))
+        self.arriveAt = parser.parse(flight_segment_info.get('arriveAt'))
+        self.departFrom = flight_segment_info.get('departFrom')
+        self.arriveIn = flight_segment_info.get('arriveIn')
+        self.flightArrow = QLabel('→')
+        self.flightArrow.setStyleSheet(" font-size: 20px; ")
+        self.initUI()
+
+    def initUI(self):
+        self.flightOrigin = FlightAbsoluteLocation(parent=self, airport=self.departFrom, time=self.departAt)
+        self.flightDestination = FlightAbsoluteLocation(parent=self, airport=self.arriveIn, time=self.arriveAt)
+        self.layout.addWidget(self.flightOrigin, alignment=Qt.AlignHCenter)
+        self.layout.addWidget(self.flightArrow, alignment=Qt.AlignHCenter)
+        self.layout.addWidget(self.flightDestination, alignment=Qt.AlignHCenter)
 
 
 class FlightSegments(BaseHContainer):
@@ -97,24 +158,60 @@ class FlightSegments(BaseHContainer):
             self.layout.addWidget(QLabel(flight_segments_info), alignment=Qt.AlignHCenter)
         else:
             for segment in flight_segments_info:
-                self.layout.addWidget(FlightSegment(parent=self, flight_segment_info=segment), alignment=Qt.AlignHCenter)
+                self.layout.addWidget(
+                    FlightSegment(parent=self, flight_segment_info=segment),
+                    alignment=Qt.AlignHCenter, stretch=1
+                )
 
 
-class FlightSegment(BaseVContainer):
-    departAt: datetime = None
-    departFrom: str = None
-    arriveAt: datetime = None
-    arriveIn: str = None
+class FlightSegmentsInfo(BaseVContainer):
+    direction: QLabel = None
+    flights: BaseHContainer = None
 
-    def __init__(self, parent=None, flight_segment_info=None):
-        super(FlightSegment, self).__init__(parent)
-        self.departAt = parser.parse(flight_segment_info.get('departAt'))
-        self.arriveAt = parser.parse(flight_segment_info.get('arriveAt'))
-        self.departFrom = flight_segment_info.get('departFrom')
-        self.arriveIn = flight_segment_info.get('arriveIn')
-        self.initUI()
+    def __init__(self, parent=None, flight_segments_info=None, direction=None):
+        super(FlightSegmentsInfo, self).__init__(parent)
+        self.initUI(flight_segments_info=flight_segments_info, direction=direction)
 
-    def initUI(self):
-        flying_time_string = self.departAt.strftime("%m/%d %H:%M") + " --> " + self.arriveAt.strftime("%m/%d %H:%M")
-        self.layout.addWidget(QLabel(self.departFrom + ' --> ' + self.arriveIn), alignment=Qt.AlignTop)
-        self.layout.addWidget(QLabel(flying_time_string), alignment=Qt.AlignBottom)
+    def initUI(self, flight_segments_info, direction):
+        self.direction = QLabel(direction)
+        self.direction.setObjectName('flightDirection')
+        self.flights = FlightSegments(parent=self, flight_segments_info=flight_segments_info)
+        self.flights.setFixedHeight(int(get_height() * 0.15))
+        self.layout.addWidget(self.flights, alignment=Qt.AlignHCenter)
+        self.layout.addWidget(self.direction, alignment=Qt.AlignHCenter)
+
+
+class TravelInfoFlying(TravelInfo):
+    left_depart_flight: FlightSegmentsInfo = None
+    middle_return_flight: FlightSegmentsInfo = None
+    right_flying_price: FlightPriceContainer = None
+
+    def __init__(self, travel_info=None, parent=None):
+        super(TravelInfoFlying, self).__init__(parent)
+        self.initUI(travel_info=travel_info.get('info'))
+
+    def initUI(self, travel_info):
+        self.left_depart_flight = FlightSegmentsInfo(parent=self, flight_segments_info=travel_info.get('depart'), direction='Departing Flight(s)')
+        self.middle_return_flight = FlightSegmentsInfo(parent=self, flight_segments_info=travel_info.get('return'), direction='Returning Flight(s)')
+        if 'could not' in str(travel_info.get('price')):
+            self.right_flying_price = FlightPriceContainer(parent=self, price=float(0))
+        else:
+            self.right_flying_price = FlightPriceContainer(parent=self, price=float(travel_info.get('price')))
+        self.set_sizes()
+        self.set_positions()
+        self.set_styles()
+
+    def set_sizes(self):
+        self.left_depart_flight.setFixedWidth(int(get_width() * 0.3))
+        self.middle_return_flight.setFixedWidth(int(get_width() * 0.3))
+        self.right_flying_price.setFixedWidth(int(get_width() * 0.08))
+
+    def set_positions(self):
+        self.layout.addWidget(self.left_depart_flight, alignment=Qt.AlignLeft)
+        self.layout.addWidget(self.middle_return_flight, alignment=Qt.AlignHCenter)
+        self.layout.addWidget(self.right_flying_price, alignment=Qt.AlignRight)
+
+    def set_styles(self):
+        self.left_depart_flight.setObjectName('departing')
+        self.middle_return_flight.setObjectName('returning')
+        self.setStyleSheet(load_stylesheet('travel_styles.qss'))
