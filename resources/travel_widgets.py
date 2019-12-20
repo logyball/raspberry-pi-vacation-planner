@@ -34,6 +34,7 @@ class DriveDistance(BaseVContainer):
     def _set_style(self):
         self.label.setObjectName('driveDistanceLabel')
         self.time.setObjectName('driveDistanceValue')
+        self.time.setFixedHeight(int(get_height() * 0.15))
         self.layout.addWidget(self.time, alignment=Qt.AlignBottom)
         self.layout.addWidget(self.label, alignment=Qt.AlignBottom)
         self.setStyleSheet(load_stylesheet('travel_styles.qss'))
@@ -52,6 +53,7 @@ class DriveTime(BaseVContainer):
     def _set_style(self):
         self.label.setObjectName('driveTimeLabel')
         self.time.setObjectName('driveTimeValue')
+        self.time.setFixedHeight(int(get_height() * 0.15))
         self.layout.addWidget(self.time, alignment=Qt.AlignBottom)
         self.layout.addWidget(self.label, alignment=Qt.AlignBottom)
         self.setStyleSheet(load_stylesheet('travel_styles.qss'))
