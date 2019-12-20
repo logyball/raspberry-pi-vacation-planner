@@ -1,4 +1,4 @@
-from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
+from PyQt5.QtWebKitWidgets import QWebView 
 from PyQt5.QtWidgets import QWidget, QSizePolicy, QLabel
 from PyQt5.QtCore import Qt, QUrl
 
@@ -8,7 +8,7 @@ from resources.travel_widgets import TravelInfo, travel_info_stupid_factory
 from helpers.config import get_height, get_stream_path, get_width, get_resort_proper_name
 
 
-class CurrentLiveStream(QWebEngineView):
+class CurrentLiveStream(QWebView):
     url: QUrl = None
 
     def __init__(self, parent: QWidget = None, resort: str = None):
@@ -20,7 +20,7 @@ class CurrentLiveStream(QWebEngineView):
         self.setFixedWidth(get_width() * 0.7)
         self.setFixedHeight(parent.height())
         self.load(self.url)
-        self.triggerPageAction(QWebEnginePage.ReloadAndBypassCache)
+        "self.triggerPageAction(QWebEnginePage.ReloadAndBypassCache)"
 
 
 class ResortInfo(BaseVContainer):
