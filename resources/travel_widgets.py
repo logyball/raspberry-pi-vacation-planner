@@ -142,6 +142,9 @@ class FlightSegment(BaseHContainer):
             time=parser.parse(flight_segment_info.get('arriveAt'))
         )
         self.layout.addWidget(self.flightCommonInfo, alignment=Qt.AlignHCenter)
+        self.layout.addWidget(self.flightOrigin, alignment=Qt.AlignHCenter)
+        self.layout.addWidget(self.flightArrow, alignment=Qt.AlignHCenter)
+        self.layout.addWidget(self.flightDestination, alignment=Qt.AlignHCenter)
 
 
 class WholeFlightInfo(BaseVContainer):
