@@ -1,4 +1,4 @@
-from PyQt5.QtWebKitWidgets import QWebView
+from PyQt5.QtWebKitWidgets import QWebView, QWebPage
 from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5.QtCore import Qt, QUrl
 
@@ -20,7 +20,7 @@ class CurrentLiveStream(QWebView):
         self.setFixedWidth(get_width() * 0.7)
         self.setFixedHeight(parent.height())
         self.load(self.url)
-        "self.triggerPageAction(QWebEnginePage.ReloadAndBypassCache)"
+        self.pageAction(QWebPage.ReloadAndBypassCache)
 
 
 class ResortInfo(BaseVContainer):
