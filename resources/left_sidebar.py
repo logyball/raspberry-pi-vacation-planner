@@ -41,10 +41,10 @@ class LeftSidebar(BaseVContainer):
 
     def initUI(self, weather_info: dict, resort: str):
         self.top_weather_bar = WeatherBar(parent=self, todays_weather=weather_info.get('today'))
-        self.middle_snow_report = SnowReport(report=weather_info.get("today").get("details"), resort=resort)
+        self.middle_snow_report = SnowReport(report=weather_info.get("today").get("details"))
         self.bottom_weather_forecast = WeatherForecastTable(parent=self, forecast=weather_info.get('forecast'))
-        self.top_weather_bar.setFixedHeight(int(get_height() * 0.25))
-        self.middle_snow_report.setFixedHeight(int(get_height() * 0.25))
+        self.top_weather_bar.setFixedHeight(int(get_height() * 0.22))
+        self.middle_snow_report.setFixedHeight(int(get_height() * 0.28))
         self.bottom_weather_forecast.setFixedHeight(int(get_height() * 0.37))
         self.layout.addWidget(self.top_weather_bar, alignment=Qt.AlignTop)
         self.layout.addWidget(self.middle_snow_report, alignment=Qt.AlignVCenter)

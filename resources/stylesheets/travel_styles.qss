@@ -80,7 +80,7 @@ QLabel#flightAbsoluteLocationTime {
     font-family: Serif;
 }
 
-FlightSegment {
+WholeFlightInfo {
     border: 1px solid black;
     border-radius: 5px;
 }

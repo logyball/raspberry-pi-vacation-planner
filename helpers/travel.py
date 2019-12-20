@@ -39,6 +39,7 @@ def _get_common_flight_info(segments):
         flight_arrives_airport = flight_info.get('arrival').get('iataCode')
         flight_arrives = flight_info.get('arrival').get('at')
         flight_duration = flight_info.get('duration', 'unknown duration')
+        flight_code = ''.join([flight_info.get('carrierCode', 'XX'), flight_info.get('number', '000')])
         try:
             flight_massaged_dur = flight_duration.split('T')[1]
         except IndexError:
@@ -48,7 +49,8 @@ def _get_common_flight_info(segments):
             'departAt': flight_departs,
             'arriveIn': flight_arrives_airport,
             'arriveAt': flight_arrives,
-            'duration': flight_massaged_dur
+            'duration': flight_massaged_dur,
+            'code': flight_code
         })
     return massaged_segments
 
