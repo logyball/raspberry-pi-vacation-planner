@@ -70,7 +70,7 @@ class WeatherForecastTable(BaseVContainer):
     def initUI(self, forecast):
         self.rows = []
         amount_of_days = len(forecast)
-        self.header = QLabel(str(amount_of_days) + " DAY FORECAST:")
+        self.header = QLabel(str(amount_of_days) + " Day Forecast")
         self.header.setFixedHeight(int(get_height() * 0.03))
         self.layout.addWidget(self.header, alignment=Qt.AlignTop)
 

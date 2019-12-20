@@ -37,10 +37,16 @@ resorts:
     longitude: '-72.908'
     driving: 'True'
     stream: 'https://img.youtube.com/vi/3B_ODJiExKU/maxresdefault.jpg'
-  alta:
-    name: 'Alta'
-    latitude: '40.588'
-    longitude: '-111.635'
-    airport: 'SLC'
+  parkcity:
+    name: 'Park City'
+    latitude: '40.651'
+    longitude: '-111.508'
+    airport: SLC
     nonstop: 'True'
-    stream: 'https://media.alta.com/resources/mtncam/Superior.jpg'
+    stream: 'https://b7.hdrelay.com/camera/d4d8b786-d517-4069-bb09-ccc679b553a5/snapshot'
+  attitash:
+    name: 'Attitash Mountain'
+    latitude: '44.082'
+    longitude: '-71.229'
+    driving: 'True'
+    stream: 'https://live2.brownrice.com/cam-images/attitash2.jpg'

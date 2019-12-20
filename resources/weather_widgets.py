@@ -1,8 +1,8 @@
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QWidget, QLabel, QFrame
+from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5.QtCore import Qt
 from resources.BaseContainers import BaseVContainer
-from helpers.config import get_height, get_resort_proper_name
+from helpers.config import get_height
 from helpers.styling import load_stylesheet
 
 
@@ -16,9 +16,8 @@ class SnowReport(BaseVContainer):
         self._add_stylesheet_info()
 
     def initUI(self, report: str, resort: str):
-        self.label = QLabel(f"Today's Weather for {get_resort_proper_name(resort)}: ")
+        self.label = QLabel("Today's Weather")
         self.label.setFixedHeight(int(get_height() * 0.05))
-        self.label.setFrameShape(QFrame.Panel)
         self.report = QLabel(report)
         self.report.setWordWrap(True)
         self.report.setFixedHeight(int(get_height() * 0.18))

@@ -11,22 +11,24 @@ QLabel#curWeatherLabel {
 }
 
 QLabel#todayWeatherReportLabel {
-    font-size: 12px;
-    qproperty-alignment: AlignCenter;
-    font-family: sans-serif;
-}
-
-QLabel#todayWeatherReportText {
-    font-size: 12px;
+    font-size: 16px;
     font-weight: bold;
     qproperty-alignment: AlignLeft;
     font-family: sans-serif;
 }
 
+QLabel#todayWeatherReportText {
+    font-size: 12px;
+    qproperty-alignment: AlignLeft;
+    font-family: sans-serif;
+    border-width: 1px;
+    border-style: solid;
+}
+
 QLabel#weatherTableHeader {
     font-size: 12px;
     font-weight: bold;
-    qproperty-alignment: AlignCenter;
+    qproperty-alignment: AlignLeft;
     font-family: sans-serif;
 }
 
