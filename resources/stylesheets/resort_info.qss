@@ -9,5 +9,8 @@ QLabel#resortOfficialTitle {
 ResortInfo {
     border-style: hidden;
     border-width: 1px;
-    padding-right: 1px;
+    border-radius: 4px;
+    padding-left: 1px;
+    padding-right: 3px;
+    padding-bottom: 2px;
 }
