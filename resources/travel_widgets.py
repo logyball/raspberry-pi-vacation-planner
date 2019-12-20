@@ -110,7 +110,6 @@ class FlightAbsoluteLocation(BaseVContainer):
         super(FlightAbsoluteLocation, self).__init__(parent)
         self.airport = QLabel(airport)
         self.initUI()
-        self.setFixedWidth(int(get_width() * 0.05))
 
     def initUI(self):
         self.airport.setObjectName('flightAbsoluteLocationAirport')
