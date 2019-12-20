@@ -112,6 +112,7 @@ class FlightAbsoluteLocation(BaseVContainer):
         self.airport = QLabel(airport)
         self.time = QLabel(time.strftime("%m/%d\n%H:%M"))
         self.initUI()
+        self.setFixedWidth(int(get_width() * 0.05))
 
     def initUI(self):
         self.airport.setObjectName('flightAbsoluteLocationAirport')
@@ -137,7 +138,7 @@ class FlightSegment(BaseHContainer):
         self.departFrom = flight_segment_info.get('departFrom')
         self.arriveIn = flight_segment_info.get('arriveIn')
         self.flightArrow = QLabel('→')
-        self.flightArrow.setStyleSheet(" font-size: 20px; ")
+        self.flightArrow.setStyleSheet(" font-size: 8px; ")
         self.initUI()
 
     def initUI(self):
@@ -166,7 +167,7 @@ class FlightSegments(BaseHContainer):
 
 class FlightSegmentsInfo(BaseVContainer):
     direction: QLabel = None
-    flights: BaseHContainer = None
+    flights: FlightSegments = None
 
     def __init__(self, parent=None, flight_segments_info=None, direction=None):
         super(FlightSegmentsInfo, self).__init__(parent)
