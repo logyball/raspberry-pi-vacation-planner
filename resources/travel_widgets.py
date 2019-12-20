@@ -193,7 +193,10 @@ class TravelInfoFlying(TravelInfo):
     def initUI(self, travel_info):
         self.left_depart_flight = FlightSegmentsInfo(parent=self, flight_segments_info=travel_info.get('depart'), direction='Departing Flight(s)')
         self.middle_return_flight = FlightSegmentsInfo(parent=self, flight_segments_info=travel_info.get('return'), direction='Returning Flight(s)')
-        self.right_flying_price = FlightPriceContainer(parent=self, price=float(travel_info.get('price')))
+        if 'could not' in str(travel_info.get('price')):
+            self.right_flying_price = FlightPriceContainer(parent=self, price=float(0))
+        else:
+            self.right_flying_price = FlightPriceContainer(parent=self, price=float(travel_info.get('price')))
         self.set_sizes()
         self.set_positions()
         self.set_styles()
