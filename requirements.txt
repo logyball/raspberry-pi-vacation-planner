@@ -1,6 +1,6 @@
 amadeus==3.2.0
 PyYAML==5.1.2
-pprint==0.1git
+pprint==0.1
 requests==2.22.0
 certifi==2019.11.28
 chardet==3.0.4
