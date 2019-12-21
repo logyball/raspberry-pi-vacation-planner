@@ -2,7 +2,7 @@
 
 An IOT assistant that will help with planning your next ski trip!  
 
-![](imgs/1.jpeg "")
+![](./imgs/1.jpeg "")
 
 I created this to work with a Raspberry Pi 3B+ with the official 7" touchscreen.  There were many challenges to overcome, 
 which I will outline in the lessons learned section of this document.
@@ -49,9 +49,17 @@ Get Google Maps Keys
 
 After completing the raspberry pi setup and setting up Raspbian on your Pi install the necessary packages.
 
-#### Secrets Config
+#### Secrets
 
-Copy `secrets.yaml.example` into a new file in the root directory called `secrets.yaml` and add your api keys.
+Copy `secrets.yaml.example` into a new file in the root directory called `secrets.yaml` and add your api keys. In addition,
+add your origin airport by IATA code as well as the coordinates that a driver would start their journey from.  In this
+way, you'll be able to use the google maps API to get driving times / distances from your origin to the ski resort, as well
+as flights.  
 
+#### Resorts Config
+
+Within the `config.yaml` there are a few hardcoded ski resorts along with their information.  They have been marked with
+the "driving" flag if they are within driving distance of Newark, NJ (EWR), but you may want to change this for yourself.
+This will determine whether or not the planner shows a driving estimation or a flying estimation for travel time.
 
 
