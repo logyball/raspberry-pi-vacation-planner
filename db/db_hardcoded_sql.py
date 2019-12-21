@@ -59,15 +59,6 @@ read_weather_info = """
     AND resort = :resort
 """
 
-
-
-
-
-
-
-
-
-
 create_main_driving_table = """
     CREATE TABLE IF NOT EXISTS driving
     (
@@ -110,7 +101,8 @@ create_segment_info_table = """
     to_location TEXT,
     to_time TEXT,
     duration TEXT,
-    depart INTEGER
+    depart INTEGER,
+    flight_code TEXT
     );
     """
 
@@ -123,9 +115,9 @@ write_flying_info = """
 
 write_flight_segment = """
     INSERT INTO segment_info
-    (from_location, from_time, to_location, to_time, duration, depart)
+    (from_location, from_time, to_location, to_time, duration, depart, flight_code)
     VALUES
-    (?, ?, ?, ?, ?, ?);
+    (?, ?, ?, ?, ?, ?, ?);
 """
 
 write_flight_rel_info = """
@@ -167,7 +159,7 @@ read_travel_info_driving = """
 """
 
 read_travel_info_flying = """
-    SELECT price, from_location, from_time, to_location, to_time, duration, depart
+    SELECT price, from_location, from_time, to_location, to_time, duration, depart, flight_code
     FROM flying
     INNER JOIN flying_rel fr ON flying.flight_seg_rel_id = fr.flight_rel_id
     INNER JOIN segment_info si ON fr.segment_rel_id = si.segment_id

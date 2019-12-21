@@ -39,6 +39,7 @@ def _get_common_flight_info(segments):
         flight_arrives_airport = flight_info.get('arrival').get('iataCode')
         flight_arrives = flight_info.get('arrival').get('at')
         flight_duration = flight_info.get('duration', 'unknown duration')
+        flight_code = ''.join([flight_info.get('carrierCode', 'XX'), flight_info.get('number', '000')])
         try:
             flight_massaged_dur = flight_duration.split('T')[1]
         except IndexError:
@@ -48,7 +49,8 @@ def _get_common_flight_info(segments):
             'departAt': flight_departs,
             'arriveIn': flight_arrives_airport,
             'arriveAt': flight_arrives,
-            'duration': flight_massaged_dur
+            'duration': flight_massaged_dur,
+            'code': flight_code
         })
     return massaged_segments
 
@@ -84,15 +86,25 @@ def _in_two_weekends_flights(prefs):
     am_cli = prefs.get('amadeus_cli')
     thursday, sunday = _get_travel_dates()
     try:
-        flights = am_cli.shopping.flight_offers.get(
-            origin=prefs.get('orig_airport'),
-            destination=prefs.get('res_airpot'),
-            departureDate=thursday,
-            returnDate=sunday,
-            nonStop=prefs.get('nonstop', False),
-            includeAirlines=prefs.get('airlines', 'UA'),
-            currency='USD'
-        )
+        if prefs.get('airlines'):
+            flights = am_cli.shopping.flight_offers.get(
+                origin=prefs.get('orig_airport'),
+                destination=prefs.get('res_airpot'),
+                departureDate=thursday,
+                returnDate=sunday,
+                nonStop=prefs.get('nonstop', False),
+                includeAirlines=prefs.get('airlines', 'UA'),
+                currency='USD'
+            )
+        else:
+            flights = am_cli.shopping.flight_offers.get(
+                origin=prefs.get('orig_airport'),
+                destination=prefs.get('res_airpot'),
+                departureDate=thursday,
+                returnDate=sunday,
+                nonStop=prefs.get('nonstop', False),
+                currency='USD'
+            )
         best_flight = _get_best_flight(flights.data)
     except Exception as e:
         print(e)  # TODO - logging

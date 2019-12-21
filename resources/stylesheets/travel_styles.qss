@@ -5,7 +5,7 @@ QLabel#driveTimeLabel {
 }
 
 QLabel#driveTimeValue {
-    font-size: 36px;
+    font-size: 30px;
     qproperty-alignment: AlignCenter;
     font-family: Serif;
 }
@@ -17,7 +17,7 @@ QLabel#driveDistanceLabel {
 }
 
 QLabel#driveDistanceValue {
-    font-size: 36px;
+    font-size: 30px;
     qproperty-alignment: AlignCenter;
     font-family: Serif;
 }
@@ -45,7 +45,7 @@ QLabel#flightPriceLabel {
 }
 
 QLabel#flightDirection {
-    font-weight: bold;
+    font-size: 12px;
 }
 
 QLabel#flightPriceValue {
@@ -69,18 +69,18 @@ QLabel#flightPriceValueBad {
 }
 
 QLabel#flightAbsoluteLocationAirport {
-    font-size: 20px;
+    font-size: 16px;
     qproperty-alignment: AlignCenter;
     font-family: Serif;
 }
 
 QLabel#flightAbsoluteLocationTime {
-    font-size: 10px;
+    font-size: 12px;
     qproperty-alignment: AlignCenter;
     font-family: Serif;
 }
 
-FlightSegment {
+WholeFlightInfo {
     border: 1px solid black;
     border-radius: 5px;
 }

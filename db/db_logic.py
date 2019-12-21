@@ -35,6 +35,7 @@ def _build_flight_info_dict(segments: list):
             'arriveIn': seg[3],
             'arriveAt': seg[4],
             'duration': seg[5],
+            'code': seg[7]
         }
         if seg[6]:
             dep.append(seg_d)
@@ -340,7 +341,8 @@ class TravelDbBackgroundProcess(BaseTravelDb):
                 segment.get('arriveIn'),
                 segment.get('arriveAt'),
                 segment.get('duration'),
-                1
+                1,
+                segment.get('code')
             )
             self._add_flight_segment(flight_seg_tup, flight_id)
 
@@ -353,7 +355,8 @@ class TravelDbBackgroundProcess(BaseTravelDb):
                 segment.get('arriveIn'),
                 segment.get('arriveAt'),
                 segment.get('duration'),
-                0
+                0,
+                segment.get('code')
             )
             self._add_flight_segment(flight_seg_tup, flight_id)
 

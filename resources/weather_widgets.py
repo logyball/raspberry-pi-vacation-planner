@@ -10,17 +10,17 @@ class SnowReport(BaseVContainer):
     label: QLabel = None
     report: QLabel = None
 
-    def __init__(self, parent: QWidget = None, report: str = None, resort: str = None):
+    def __init__(self, parent: QWidget = None, report: str = None):
         super(SnowReport, self).__init__(parent)
-        self.initUI(report=report, resort=resort)
+        self.initUI(report=report)
         self._add_stylesheet_info()
 
-    def initUI(self, report: str, resort: str):
+    def initUI(self, report: str):
         self.label = QLabel("Today's Weather")
         self.label.setFixedHeight(int(get_height() * 0.05))
         self.report = QLabel(report)
         self.report.setWordWrap(True)
-        self.report.setFixedHeight(int(get_height() * 0.18))
+        self.report.setFixedHeight(int(get_height() * 0.20))
         self.layout.addWidget(self.label, alignment=Qt.AlignTop)
         self.layout.addWidget(self.report, alignment=Qt.AlignBottom)
 
@@ -59,5 +59,5 @@ class CurrentTemp(QLabel):
     def initUI(self, cur_temp):
         self.setText(cur_temp)
         self.setObjectName('curWeatherTemp')
-        self.setFixedHeight(int(get_height() * 0.25))
+        self.setFixedHeight(int(get_height() * 0.22))
         self.setStyleSheet(load_stylesheet('weather_table.qss'))
