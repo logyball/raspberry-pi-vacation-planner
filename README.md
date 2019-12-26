@@ -3,6 +3,7 @@
 An IOT assistant that will help with planning your next ski trip!  
 
 ![](./imgs/1.jpeg "")
+![](./imgs/2.jpg "")
 
 #### Background
 
