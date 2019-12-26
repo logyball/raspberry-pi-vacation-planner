@@ -87,5 +87,35 @@ in order to create the IOT device, continue reading below.
 
 ## Initialization on the Pi
 
-After completing the raspberry pi setup and setting up Raspbian on your Pi install the necessary packages.
+After completing the raspberry pi setup and setting up Raspbian on your Pi, you'll need to do some additional setup.  In order to
+get PyQT5 running, you need to install it manually with `apt-get` due to compatibility issues with the ARM processor on 
+the raspberry pi.  Check out [this post](https://raspberrypi.stackexchange.com/questions/62939/pyqt5-on-a-raspberry-pi) on StackExchange for 
+more information.  [This post has some more information as well.](https://projects.webvoss.de/2018/11/04/quick-note-web-view-with-pyqt5-and-qt-5-7-on-raspberry-pi/)
+
+So to start out, run the `./ops/install_qt_resources.sh` to install the QT resources.  Then checkout the `pi_branch` of 
+this repository and install the required packages from the `requirements.txt` folder with `$ pip3 install -r requirements.txt`.
+From here, running `$ python3 main.py` should get things up and running!
+
+#### Tips and Tricks
+
+##### Disabling Screen Turnoff
+
+The Raspberry Pi screen will turn off eventually.  To make this thing always on, see [this post](https://www.raspberrypi.org/forums/viewtopic.php?t=18200#p185781)
+on the Raspberry Pi forums:
+
+```
+sudo vim /etc/lightdm/lightdm.conf
+
+In that file, look for:
+[SeatDefault]
+
+and insert this line:
+xserver-command=X -s 0 dpms
+```
+
+##### Failure Recovery
+
+There is an included `start_vacation.sh` operations script that will run the device (assuming it's installed in the `/home/pi`
+directory).  Using [Supervisord](http://supervisord.org/introduction.html) and the included `supervisord.conf` in the `ops`
+directory, you can have this guy running as a failure-resistant service!  Simply `cd` into the `ops` folder and run `$ sudo supervisor -c supervisord.conf`.
 
