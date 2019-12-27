@@ -1,9 +1,9 @@
 from PyQt5.QtWidgets import QWidget, QSizePolicy
 from PyQt5.QtCore import Qt, pyqtSignal
-from resources.outer_layer import BottomBar, CentralBar
-from resources.BaseContainers import BaseMainWindow
-from helpers.config import get_height
-from helpers.scrolling_resort_list import ResortMasterList
+from src.resources.OuterLayer import BottomBar, CentralBar
+from src.resources.BaseContainers import BaseMainWindow
+from src.backend.config import get_height
+from src.backend.scrolling_resort_list import ResortMasterList
 from time import time
 
 

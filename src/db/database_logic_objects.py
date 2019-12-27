@@ -1,60 +1,63 @@
 import sqlite3
 from datetime import datetime
-from pprint import pprint
-
-from helpers.config import get_resort_driving, get_list_of_resorts
-from db.db_hardcoded_sql import *
-from helpers.travel import get_driving_to_resort_data_from_api, get_flying_to_resort_data_from_api
-from helpers.weather import get_weather_info_from_api
-
-def _get_cur_date_hour():
-    cur_dt = datetime.now()
-    cur_dt_str = cur_dt.strftime("%Y-%m-%d")
-    cur_hr = cur_dt.hour
-    return cur_dt_str, cur_hr
+from src.backend.config import get_resort_driving, get_list_of_resorts
+from src.db.db_hardcoded_sql import *
+from src.backend.travel import get_driving_to_resort_data_from_api, get_flying_to_resort_data_from_api
+from src.backend.weather import get_weather_info_from_api
 
 
-def _check_currentness_query_params(resort: str):
-    cur_dt = _get_cur_date_hour()
-    return {
-        'resort': resort,
-        'date': cur_dt[0],
-        'hour': cur_dt[1]
-    }
+class DbHelpers(object):
+    def __init__(self):
+        pass
 
+    def get_cur_date_hour(self):
+        cur_dt = datetime.now()
+        cur_dt_str = cur_dt.strftime("%Y-%m-%d")
+        cur_hr = cur_dt.hour
+        return cur_dt_str, cur_hr
 
-def _build_flight_info_dict(segments: list):
-    dep = []
-    ret = []
-    price = ''
-    for seg in segments:
-        price = seg[0]
-        seg_d = {
-            'departFrom': seg[1],
-            'departAt': seg[2],
-            'arriveIn': seg[3],
-            'arriveAt': seg[4],
-            'duration': seg[5],
-            'code': seg[7]
+    def check_currentness_query_params(self, resort: str):
+        cur_dt = self.get_cur_date_hour()
+        return {
+            'resort': resort,
+            'date': cur_dt[0],
+            'hour': cur_dt[1]
         }
-        if seg[6]:
-            dep.append(seg_d)
-        else:
-            ret.append(seg_d)
-    return {
-        'depart': dep,
-        'price': price,
-        'return': ret
-    }
+
+    def build_flight_info_dict(self, segments: list):
+        dep = []
+        ret = []
+        price = ''
+        for seg in segments:
+            price = seg[0]
+            seg_d = {
+                'departFrom': seg[1],
+                'departAt': seg[2],
+                'arriveIn': seg[3],
+                'arriveAt': seg[4],
+                'duration': seg[5],
+                'code': seg[7]
+            }
+            if seg[6]:
+                dep.append(seg_d)
+            else:
+                ret.append(seg_d)
+        return {
+            'depart': dep,
+            'price': price,
+            'return': ret
+        }
 
 
 class BaseDb(object):
     source: str = None
     connection: sqlite3.Connection = None
     cursor: sqlite3.Cursor = None
+    helpers: DbHelpers = None
 
     def __init__(self, source=None):
         self.source = source
+        self.helpers = DbHelpers()
         self.set_up_connection()
 
     def set_up_connection(self):
@@ -79,7 +82,7 @@ class BaseWeatherDb(BaseDb):
         super(BaseWeatherDb, self).__init__(source=source)
 
     def _check_weather_is_current(self, resort: str):
-        query_params = _check_currentness_query_params(resort)
+        query_params = self.helpers.check_currentness_query_params(resort)
         self.cursor.execute(check_weather_resort_current, query_params)
         return self._check_currentness_result()
 
@@ -89,7 +92,7 @@ class WeatherDbReader(BaseWeatherDb):
         super(WeatherDbReader, self).__init__(source=source)
 
     def get_weather_info(self, resort: str):
-        cur_dt = _get_cur_date_hour()
+        cur_dt = self.helpers.get_cur_date_hour()
         if self._check_weather_is_current(resort=resort):
             return self._get_weather_from_db(resort, cur_dt)
         print('getting weather from slow ass api')
@@ -136,12 +139,12 @@ class BaseTravelDb(BaseDb):
         super(BaseTravelDb, self).__init__(source=source)
 
     def _check_driving_is_current(self, resort: str):
-        query_params = _check_currentness_query_params(resort)
+        query_params = self.helpers.check_currentness_query_params(resort)
         self.cursor.execute(check_driving_resort_current, query_params)
         return self._check_currentness_result()
 
     def _check_flying_is_current(self, resort: str):
-        query_params = _check_currentness_query_params(resort)
+        query_params = self.helpers.check_currentness_query_params(resort)
         self.cursor.execute(check_flying_resort_current, query_params)
         return self._check_currentness_result()
 
@@ -151,7 +154,7 @@ class TravelDbReader(BaseTravelDb):
         super(TravelDbReader, self).__init__(source)
 
     def get_travel_info(self, resort: str):
-        cur_dt = _get_cur_date_hour()
+        cur_dt = self.helpers.get_cur_date_hour()
         if get_resort_driving(resort):
             return {
                 'mode': 'driving',
@@ -187,7 +190,7 @@ class TravelDbReader(BaseTravelDb):
                 }
             self.cursor.execute(read_travel_info_flying, query_params)
             segment_list = self.cursor.fetchall()
-            return _build_flight_info_dict(segment_list)
+            return self.helpers.build_flight_info_dict(segment_list)
         print('flying info: not current, fetching from slow ass api')
         return get_flying_to_resort_data_from_api(resort)
 
@@ -233,7 +236,7 @@ class WeatherDbBackgroundProcess(BaseWeatherDb):
                 self.add_weather_info(resort, weather_info)
 
     def add_weather_info(self, resort: str, weather_info: dict):
-        cur_dt = _get_cur_date_hour()
+        cur_dt = self.helpers.get_cur_date_hour()
         insert_tup = (
             resort,
             cur_dt[0],
@@ -290,7 +293,7 @@ class TravelDbBackgroundProcess(BaseTravelDb):
     def add_drive_info(self, drive_time_info: dict, resort: str):
         """ (resort, date, hour, drive_time, drive_distance) """
         print(f'adding driving info from api for {resort}')
-        cur_dt_hour = _get_cur_date_hour()
+        cur_dt_hour = self.helpers.get_cur_date_hour()
         drive_tup = (
             resort,
             cur_dt_hour[0],
@@ -305,7 +308,7 @@ class TravelDbBackgroundProcess(BaseTravelDb):
     def add_flight_info(self, flight_info: dict, resort: str):
         """ (resort, date, hour, price, err) """
         print(f'adding flying info from api for {resort}')
-        cur_dt = _get_cur_date_hour()
+        cur_dt = self.helpers.get_cur_date_hour()
         flight_write_data = (
             resort,
             cur_dt[0],
@@ -369,7 +372,7 @@ class TravelDbBackgroundProcess(BaseTravelDb):
 
     def _add_error_flight(self, flying_info: dict, resort: str):
         """ (resort, date, hour, price, err) """
-        cur_dt = _get_cur_date_hour()
+        cur_dt = self.helpers.get_cur_date_hour()
         flight_write_data = (
             resort,
             cur_dt[0],

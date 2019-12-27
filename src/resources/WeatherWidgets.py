@@ -1,9 +1,9 @@
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5.QtCore import Qt
-from resources.BaseContainers import BaseVContainer
-from helpers.config import get_height
-from helpers.styling import load_stylesheet
+from src.resources.BaseContainers import BaseVContainer
+from src.backend.config import get_height
+from src.backend.styling import load_stylesheet
 
 
 class SnowReport(BaseVContainer):
@@ -35,7 +35,7 @@ class CurrentIcon(QWidget):
     icon: QLabel = None
     icon_path: str = None
 
-    def __init__(self, parent=None, weather_icon_path=''):
+    def __init__(self, parent: QWidget = None, weather_icon_path: str = None):
         super(CurrentIcon, self).__init__(parent)
         self.icon_path = weather_icon_path
         self.initUI()

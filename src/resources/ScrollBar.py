@@ -1,9 +1,8 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QPushButton, QMainWindow, QLabel
-
-from helpers.styling import load_stylesheet
-from resources.BaseContainers import BaseHContainer
+from PyQt5.QtWidgets import QPushButton, QMainWindow
+from src.backend.styling import load_stylesheet
+from src.resources.BaseContainers import BaseHContainer
 
 
 class ScrollButton(QPushButton):

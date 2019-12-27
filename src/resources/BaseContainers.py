@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import (
     QVBoxLayout, QHBoxLayout, QFrame, QMainWindow
 )
 from PyQt5.Qt import Qt
-from helpers.config import get_width, get_height
+from src.backend.config import get_width, get_height
 
 
 class BaseVContainer(QFrame):

@@ -1,6 +1,5 @@
 from time import sleep
-
-from helpers.config import get_resort_coordinates, get_weather_url
+from src.backend.config import get_resort_coordinates, get_weather_url
 from datetime import datetime, timezone
 from requests import get
 from shutil import copyfileobj
@@ -84,7 +83,7 @@ def _get_date(details):
 def _get_icon_path(icon_url):
     icon_str = sub(r"[/\?=+\.,!@#$%^&*()]", "", icon_url.split('icons')[1])
     icon_str = icon_str + ".png"
-    icon_path = ''.join([getcwd(), sep, "resources", sep, "weather_icons", sep, icon_str])
+    icon_path = ''.join([getcwd(), sep, "src", sep, "resources", sep, "weather_icons", sep, icon_str])
     if not Path(icon_path).is_file():
         response = get(icon_url, stream=True)
         with open(icon_path, 'wb') as icon_output:

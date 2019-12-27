@@ -1,11 +1,11 @@
-from PyQt5.QtWidgets import QWidget, QSizePolicy, QFrame
+from PyQt5.QtWidgets import QWidget, QFrame
 from PyQt5.QtCore import Qt
-
-from helpers.styling import load_stylesheet
-from resources import left_sidebar, right_sidebar
-from resources.BaseContainers import BaseHContainer
-from resources.scroll_bar import ScrollLeftButton, ScrollRightButton, ScrollIndexButtonContainer
-from helpers.config import get_width
+from src.backend.styling import load_stylesheet
+from src.resources import LeftSidebar
+from src.resources import RightSidebar
+from src.resources.BaseContainers import BaseHContainer
+from src.resources.ScrollBar import ScrollLeftButton, ScrollRightButton, ScrollIndexButtonContainer
+from src.backend.config import get_width
 
 
 class BottomBar(BaseHContainer):
@@ -41,16 +41,16 @@ class BottomBar(BaseHContainer):
 
 
 class CentralBar(BaseHContainer):
-    left: left_sidebar.LeftSidebar = None
-    right: right_sidebar.ResortInfo = None
+    left: LeftSidebar.LeftSidebar = None
+    right: RightSidebar.ResortInfo = None
 
     def __init__(self, parent=None, resort=''):
         super(CentralBar, self).__init__(parent)
         self.initUI(resort=resort)
 
     def initUI(self, resort=''):
-        self.left = left_sidebar.LeftSidebar(parent=self, resort=resort)
-        self.right = right_sidebar.ResortInfo(parent=self, resort=resort)
+        self.left = LeftSidebar.LeftSidebar(parent=self, resort=resort)
+        self.right = RightSidebar.ResortInfo(parent=self, resort=resort)
         self.left.setFixedWidth(int(get_width() * 0.3))
         self.right.setFixedWidth(int(get_width() * 0.69))
         self.layout.addWidget(self.left, alignment=Qt.AlignLeft)

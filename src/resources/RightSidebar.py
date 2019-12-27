@@ -2,10 +2,10 @@ from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
 from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5.QtCore import Qt, QUrl
 
-from helpers.styling import load_stylesheet
-from resources.BaseContainers import BaseVContainer
-from resources.travel_widgets import TravelInfo, travel_info_stupid_factory
-from helpers.config import get_height, get_stream_path, get_width, get_resort_proper_name
+from src.backend.styling import load_stylesheet
+from src.resources.BaseContainers import BaseVContainer
+from src.resources.TravelWidgets import TravelInfo, travel_info_stupid_factory
+from src.backend.config import get_height, get_stream_path, get_width, get_resort_proper_name
 
 
 class CurrentLiveStream(QWebEngineView):

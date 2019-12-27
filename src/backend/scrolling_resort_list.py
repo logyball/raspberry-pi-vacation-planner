@@ -1,4 +1,5 @@
-from helpers.config import get_list_of_resorts
+from src.backend.config import get_list_of_resorts
+
 
 class ResortMasterList(object):
     resorts: list = None

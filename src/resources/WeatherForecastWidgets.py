@@ -1,9 +1,9 @@
 from PyQt5.QtWidgets import QLabel, QWidget, QFrame
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
-from helpers.config import get_width, get_height
-from resources.BaseContainers import BaseVContainer, BaseHContainer
-from helpers.styling import load_stylesheet
+from src.backend.config import get_width, get_height
+from src.resources.BaseContainers import BaseVContainer, BaseHContainer
+from src.backend.styling import load_stylesheet
 
 
 class TableIcon(QWidget):

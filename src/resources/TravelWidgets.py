@@ -2,10 +2,10 @@ from datetime import datetime
 from dateutil import parser
 from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5.QtCore import Qt
-from db.db_logic import TravelDbReader
-from helpers.styling import load_stylesheet
-from resources.BaseContainers import BaseHContainer, BaseVContainer
-from helpers.config import get_width, get_db_path, get_height
+from src.db.database_logic_objects import TravelDbReader
+from src.backend.styling import load_stylesheet
+from src.resources.BaseContainers import BaseHContainer, BaseVContainer
+from src.backend.config import get_width, get_db_path, get_height
 
 
 def travel_info_stupid_factory(resort, parent=None):

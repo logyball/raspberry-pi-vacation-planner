@@ -1,4 +1,4 @@
-from db.db_logic import TravelDbBackgroundProcess, WeatherDbBackgroundProcess
+from src.db.database_logic_objects import TravelDbBackgroundProcess, WeatherDbBackgroundProcess
 from time import sleep
 
 
