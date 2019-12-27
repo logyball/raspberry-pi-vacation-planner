@@ -22,7 +22,7 @@ work for you.
 
 ### Description
 
-Some basic configuration is required. Once that is complete, spinning up an instance of the planner _should_ be easy.
+Some basic configuration is required. Once that is complete, spinning up an instance of the planner _should_ be easy (and yet, these things never seem to be...).
 Ski resort information is defined in a configuration file.  Information about the users' home location is then put into a secrets
 so that travel information can be calculated.  When all setup is complete, the planner runs on a Raspberry Pi and will
 automatically update with recent info about the ski resorts defined in the configuration file. Two APIs are used, and
