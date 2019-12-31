@@ -3,6 +3,7 @@
 An IOT assistant that will help with planning your next ski trip!  
 
 ![](./imgs/1.jpeg "")
+![](./imgs/2.jpg "")
 
 #### Background
 
@@ -25,7 +26,7 @@ Some basic configuration is required. Once that is complete, spinning up an inst
 Ski resort information is defined in a configuration file.  Information about the users' home location is then put into a secrets
 so that travel information can be calculated.  When all setup is complete, the planner runs on a Raspberry Pi and will
 automatically update with recent info about the ski resorts defined in the configuration file. Two APIs are used, and
-the ncessary API keys are documented in the desktop setup section.
+the necessary API keys are documented in the desktop setup section.
 
 # Desktop / Common Setup
 
@@ -62,7 +63,7 @@ Try out spinning up the planner for yourself:
 `$ python main.py`
 
 From here, feel free to play around with the source code.  There are various `TODO`s scattered throughout the repo that 
-could probably use addressing.  In addition, the resilency of this thing is... not great yet, so you might want to beef it up.
+could probably use addressing.  In addition, the resiliency of this thing is... not great yet, so you might want to beef it up.
 
 # Raspberry Pi Setup
 
