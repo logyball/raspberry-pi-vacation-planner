@@ -3,8 +3,8 @@ from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5.QtCore import Qt, QUrl
 
 from src.backend.styling import load_stylesheet
-from src.resources.BaseContainers import BaseVContainer
-from src.resources.TravelWidgets import TravelInfo, travel_info_stupid_factory
+from src.resources.base_containers import BaseVContainer
+from src.resources.travel_widgets import TravelInfo, travel_info_stupid_factory
 from src.backend.config import get_height, get_stream_path, get_width, get_resort_proper_name
 
 

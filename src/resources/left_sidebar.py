@@ -2,9 +2,9 @@ from PyQt5.QtCore import Qt
 from src.db.database_logic_objects import WeatherDbReader
 from src.backend.config import get_width, get_height, get_db_path
 from src.backend.styling import load_stylesheet
-from src.resources.WeatherWidgets import CurrentTemp, CurrentIcon, SnowReport
-from src.resources.BaseContainers import BaseVContainer, BaseHContainer
-from src.resources.WeatherForecastWidgets import WeatherForecastTable
+from src.resources.weather_widgets import CurrentTemp, CurrentIcon, SnowReport
+from src.resources.base_containers import BaseVContainer, BaseHContainer
+from src.resources.weather_forecast_widgets import WeatherForecastTable
 
 
 class WeatherBar(BaseHContainer):

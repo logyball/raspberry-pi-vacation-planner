@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5.QtCore import Qt
 from src.db.database_logic_objects import TravelDbReader
 from src.backend.styling import load_stylesheet
-from src.resources.BaseContainers import BaseHContainer, BaseVContainer
+from src.resources.base_containers import BaseHContainer, BaseVContainer
 from src.backend.config import get_width, get_db_path, get_height
 
 

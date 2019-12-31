@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QApplication
 from sys import argv
 from src.backend.config import get_db_path
 from src.backend.threading_functions import cntdown_timer
-from src.resources.MainApp import MainWindow
+from src.resources.main_app import MainWindow
 from src.db.db_daemon import db_weather_daemon, db_travel_daemon
 from threading import Thread
 
