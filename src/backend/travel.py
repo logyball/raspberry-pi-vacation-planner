@@ -1,8 +1,5 @@
 from amadeus import Client as amadeus_Client
-from src.backend.config import (
-    get_amadeus_keys, get_maps_key, get_resort_coordinates, get_origin_coordinates,
-    get_airlines_pref, get_origin_airport, get_resort_airport_prefs
-)
+from src.backend.config import *
 from googlemaps import Client as gmaps_Client
 from datetime import timedelta, date
 from pprint import pprint
