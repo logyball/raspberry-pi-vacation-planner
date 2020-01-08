@@ -1,9 +1,9 @@
 import sqlite3
 from datetime import datetime
-from src.backend.config import get_resort_driving, get_list_of_resorts
 from src.db.db_hardcoded_sql import *
 from src.backend.travel import get_driving_to_resort_data_from_api, get_flying_to_resort_data_from_api
 from src.backend.weather import get_weather_info_from_api
+from src.backend.config import ConfigFunctions
 
 
 class DbHelpers(object):
@@ -54,8 +54,10 @@ class BaseDb(object):
     connection: sqlite3.Connection = None
     cursor: sqlite3.Cursor = None
     helpers: DbHelpers = None
+    config: ConfigFunctions = None
 
     def __init__(self, source=None):
+        self.config = ConfigFunctions()
         self.source = source
         self.helpers = DbHelpers()
         self.set_up_connection()
@@ -155,7 +157,7 @@ class TravelDbReader(BaseTravelDb):
 
     def get_travel_info(self, resort: str):
         cur_dt = self.helpers.get_cur_date_hour()
-        if get_resort_driving(resort):
+        if self.config.get_resort_driving(resort):
             return {
                 'mode': 'driving',
                 'info': self._get_cur_driving_info(resort, cur_dt)
@@ -216,7 +218,7 @@ class WeatherDbBackgroundProcess(BaseWeatherDb):
     def __init__(self, source: str = None):
         super(WeatherDbBackgroundProcess, self).__init__(source)
         self.init_db()
-        self.resort_list = get_list_of_resorts()
+        self.resort_list = self.config.get_list_of_resorts()
 
     def init_db(self):
         self.cursor.execute(enable_foreign_keys)
@@ -276,7 +278,7 @@ class TravelDbBackgroundProcess(BaseTravelDb):
     def __init__(self, source=None):
         super(TravelDbBackgroundProcess, self).__init__(source)
         self.init_db()
-        self.resort_list = get_list_of_resorts()
+        self.resort_list = self.config.get_list_of_resorts()
 
     def init_db(self):
         self.cursor.execute(enable_foreign_keys)
@@ -325,10 +327,10 @@ class TravelDbBackgroundProcess(BaseTravelDb):
 
     def update_resorts_check(self):
         for resort in self.resort_list:
-            if get_resort_driving(resort) and not self._check_driving_is_current(resort):
+            if self.config.get_resort_driving(resort) and not self._check_driving_is_current(resort):
                 drive_info = get_driving_to_resort_data_from_api(resort)
                 self.add_drive_info(drive_info, resort)
-            if not get_resort_driving(resort) and not self._check_flying_is_current(resort):
+            if not self.config.get_resort_driving(resort) and not self._check_flying_is_current(resort):
                 flying_info = get_flying_to_resort_data_from_api(resort)
                 if 'could not' in flying_info.get('depart', 'could not') or 'could not' in flying_info.get('return', 'could not'):
                     self._add_error_flight(flying_info, resort)

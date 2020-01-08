@@ -1,5 +1,5 @@
 from time import sleep
-from src.backend.config import get_resort_coordinates, get_weather_url
+from src.backend.config import ConfigFunctions
 from datetime import datetime, timezone
 from requests import get
 from shutil import copyfileobj
@@ -8,11 +8,13 @@ from os.path import sep
 from os import getcwd
 from re import sub
 import dateutil.parser
-BASE_WEATHER_URL = get_weather_url()
+
+config = ConfigFunctions()
+BASE_WEATHER_URL = config.get_weather_url()
 
 
 def get_weather_info_from_api(resort_name, num_days=5):
-    latitude, longitude = get_resort_coordinates(resort_name)
+    latitude, longitude = config.get_resort_coordinates(resort_name)
     resort_gps_url = "".join([BASE_WEATHER_URL, latitude, ",", longitude])
     while True:
         response = get(resort_gps_url)

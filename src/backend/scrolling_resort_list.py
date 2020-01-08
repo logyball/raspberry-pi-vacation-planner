@@ -1,13 +1,15 @@
-from src.backend.config import get_list_of_resorts
+from src.backend.config import ConfigFunctions
 
 
 class ResortMasterList(object):
+    conf: ConfigFunctions = None
     resorts: list = None
     cur_index: int = 0
     num_resorts: int = 0
 
     def __init__(self):
-        self.resorts = get_list_of_resorts()
+        self.conf = ConfigFunctions()
+        self.resorts = self.conf.get_list_of_resorts()
         self.num_resorts = len(self.resorts)
 
     def get_next_resort(self):
