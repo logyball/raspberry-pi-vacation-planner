@@ -61,9 +61,9 @@ class BaseDb(object):
         self.connection = sqlite3.connect(self.source)
         self.cursor = self.connection.cursor()
 
-    def _check_currentness_result(self, cur_time: int):
+    def _check_currentness_result(self):
         results = self.cursor.fetchone()
-        if results[0] > 0 or (5 > cur_time > 18):
+        if results[0] > 0:
             return True
         return False
 
@@ -80,9 +80,8 @@ class BaseWeatherDb(BaseDb):
 
     def _check_weather_is_current(self, resort: str):
         query_params = _check_currentness_query_params(resort)
-        cur_hour = query_params.get('hour')
         self.cursor.execute(check_weather_resort_current, query_params)
-        return self._check_currentness_result(cur_time=cur_hour)
+        return self._check_currentness_result()
 
 
 class WeatherDbReader(BaseWeatherDb):
@@ -138,15 +137,13 @@ class BaseTravelDb(BaseDb):
 
     def _check_driving_is_current(self, resort: str):
         query_params = _check_currentness_query_params(resort)
-        cur_hour = query_params.get('hour')
         self.cursor.execute(check_driving_resort_current, query_params)
-        return self._check_currentness_result(cur_time=cur_hour)
+        return self._check_currentness_result()
 
     def _check_flying_is_current(self, resort: str):
         query_params = _check_currentness_query_params(resort)
-        cur_hour = query_params.get('hour')
         self.cursor.execute(check_flying_resort_current, query_params)
-        return self._check_currentness_result(cur_time=cur_hour)
+        return self._check_currentness_result()
 
 
 class TravelDbReader(BaseTravelDb):
