@@ -17,6 +17,7 @@ class TestApisAreUp(unittest.TestCase):
         try:
             cls.config_fn._get_secrets()
         except FileNotFoundError as e:
+            print('file not found')
             print(e)
             secrets_yaml = yaml.load(f"""
             keys:
@@ -27,6 +28,9 @@ class TestApisAreUp(unittest.TestCase):
             with open('secrets.yaml', 'w') as f:
                 f.write(yaml.dump(secrets_yaml))
                 cls.wrote_new_file = True
+        with open('secrets.yaml', 'r') as f:
+            print(f.read())
+
 
     @classmethod
     def tearDownClass(cls) -> None:
