@@ -1,4 +1,5 @@
 # Skiing Vacation Planner
+![https://travis-ci.org/loganballard/raspberry-pi-vacation-planner](https://travis-ci.org/loganballard/raspberry-pi-vacation-planner.svg?branch=master)
 
 An IOT assistant that will help with planning your next ski trip!  
 
