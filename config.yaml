@@ -50,3 +50,9 @@ resorts:
     longitude: '-71.229'
     driving: 'True'
     stream: 'https://live2.brownrice.com/cam-images/attitash2.jpg'
+  miami:
+    name: 'Miami Beach'
+    latitude: '25.790'
+    longitude: '-80.130'
+    airport: MIA
+    stream: 'https://camstills.cdn-surfline.com/ec-southbeach/latest_small.jpg'

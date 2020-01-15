@@ -4,12 +4,14 @@ from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5.QtCore import Qt
 from src.db.database_logic_objects import TravelDbReader
 from src.backend.styling import load_stylesheet
-from src.resources.BaseContainers import BaseHContainer, BaseVContainer
-from src.backend.config import get_width, get_db_path, get_height
+from src.resources.base_containers import BaseHContainer, BaseVContainer
+from src.backend.config import ConfigFunctions
+
+config = ConfigFunctions()
 
 
 def travel_info_stupid_factory(resort, parent=None):
-    db_reader = TravelDbReader(get_db_path())
+    db_reader = TravelDbReader(config.get_db_path())
     travel_info = db_reader.get_travel_info(resort=resort)
     if travel_info.get("mode", "flying") == "flying":
         return TravelInfoFlying(travel_info=travel_info, parent=parent)
@@ -34,7 +36,7 @@ class DriveDistance(BaseVContainer):
     def _set_style(self):
         self.label.setObjectName('driveDistanceLabel')
         self.time.setObjectName('driveDistanceValue')
-        self.time.setFixedHeight(int(get_height() * 0.15))
+        self.time.setFixedHeight(int(self.config.get_height() * 0.15))
         self.layout.addWidget(self.time, alignment=Qt.AlignBottom)
         self.layout.addWidget(self.label, alignment=Qt.AlignBottom)
         self.setStyleSheet(load_stylesheet('travel_styles.qss'))
@@ -53,7 +55,7 @@ class DriveTime(BaseVContainer):
     def _set_style(self):
         self.label.setObjectName('driveTimeLabel')
         self.time.setObjectName('driveTimeValue')
-        self.time.setFixedHeight(int(get_height() * 0.15))
+        self.time.setFixedHeight(int(self.config.get_height() * 0.15))
         self.layout.addWidget(self.time, alignment=Qt.AlignBottom)
         self.layout.addWidget(self.label, alignment=Qt.AlignBottom)
         self.setStyleSheet(load_stylesheet('travel_styles.qss'))
@@ -75,8 +77,8 @@ class TravelInfoDriving(TravelInfo):
         self.setStyleSheet(load_stylesheet('travel_styles.qss'))
 
     def set_sizes(self):
-        self.left_drive_time.setMinimumWidth(int(get_width() * 0.35))
-        self.right_driving_distance.setMinimumWidth(int(get_width() * 0.35))
+        self.left_drive_time.setMinimumWidth(int(self.config.get_width() * 0.35))
+        self.right_driving_distance.setMinimumWidth(int(self.config.get_width() * 0.35))
 
     def set_positions(self):
         self.layout.addWidget(self.left_drive_time, alignment=Qt.AlignLeft)
@@ -98,7 +100,7 @@ class FlightPriceContainer(BaseVContainer):
         else:
             self.flight_price.setObjectName('flightPriceValue')
         self.bottom_label.setObjectName('flightPriceLabel')
-        self.flight_price.setFixedHeight(int(get_height() * 0.15))
+        self.flight_price.setFixedHeight(int(self.config.get_height() * 0.15))
         self.layout.addWidget(self.flight_price, alignment=Qt.AlignHCenter)
         self.layout.addWidget(self.bottom_label, alignment=Qt.AlignHCenter)
 
@@ -125,7 +127,7 @@ class FlightSegment(BaseHContainer):
         super(FlightSegment, self).__init__(parent)
         self.flightArrow = QLabel('→')
         self.flightArrow.setStyleSheet(" font-size: 8px; ")
-        self.flightArrow.setFixedWidth(int(get_width() * 0.01))
+        self.flightArrow.setFixedWidth(int(self.config.get_width() * 0.01))
         self.flightCommonInfo = BaseHContainer()
         self.initUI(flight_segment_info=flight_segment_info)
 
@@ -158,7 +160,7 @@ class WholeFlightInfo(BaseVContainer):
 
     def initUI(self, flight_segment_info: dict = None):
         self.flightCommonInfo.layout.addWidget(QLabel(flight_segment_info.get('code')), alignment=Qt.AlignHCenter)
-        self.flightSpecificInfo.setFixedHeight(int(get_height() * 0.1))
+        self.flightSpecificInfo.setFixedHeight(int(self.config.get_height() * 0.1))
         self.layout.addWidget(self.flightSpecificInfo, alignment=Qt.AlignVCenter)
         self.layout.addWidget(self.flightCommonInfo, alignment=Qt.AlignVCenter)
 
@@ -191,7 +193,7 @@ class FlightSegmentsInfo(BaseVContainer):
         self.direction = QLabel(direction)
         self.direction.setObjectName('flightDirection')
         self.flights = FlightSegments(parent=self, flight_segments_info=flight_segments_info)
-        self.flights.setFixedHeight(int(get_height() * 0.15))
+        self.flights.setFixedHeight(int(self.config.get_height() * 0.15))
         self.layout.addWidget(self.flights, alignment=Qt.AlignHCenter)
         self.layout.addWidget(self.direction, alignment=Qt.AlignHCenter)
 
@@ -227,9 +229,9 @@ class TravelInfoFlying(TravelInfo):
         self.set_styles()
 
     def set_sizes(self):
-        self.left_depart_flight.setFixedWidth(int(get_width() * 0.3))
-        self.middle_return_flight.setFixedWidth(int(get_width() * 0.3))
-        self.right_flying_price.setFixedWidth(int(get_width() * 0.08))
+        self.left_depart_flight.setFixedWidth(int(self.config.get_width() * 0.3))
+        self.middle_return_flight.setFixedWidth(int(self.config.get_width() * 0.3))
+        self.right_flying_price.setFixedWidth(int(self.config.get_width() * 0.08))
 
     def set_positions(self):
         self.layout.addWidget(self.left_depart_flight, alignment=Qt.AlignLeft)

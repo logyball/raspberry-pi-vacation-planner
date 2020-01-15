@@ -1,14 +1,16 @@
 from amadeus import Client as amadeus_Client
-from src.backend.config import *
+from src.backend.config import ConfigFunctions
 from googlemaps import Client as gmaps_Client
 from datetime import timedelta, date
 from pprint import pprint
 
+config = ConfigFunctions()
+
 
 def get_driving_to_resort_data_from_api(resort):
     cli = _get_gmaps_client()
-    resort_lat, resort_lon = get_resort_coordinates(resort)
-    origin_lat, origin_lon = get_origin_coordinates()
+    resort_lat, resort_lon = config.get_resort_coordinates(resort)
+    origin_lat, origin_lon = config.get_origin_coordinates()
     res = cli.directions(
         origin=''.join([origin_lat, ',', origin_lon]),
         destination=''.join([resort_lat, ',', resort_lon]),
@@ -138,11 +140,11 @@ def _get_drive_time(maps_response):
 
 
 def _get_gmaps_client():
-    return gmaps_Client(key=get_maps_key())
+    return gmaps_Client(key=config.get_maps_key())
 
 
 def _get_amadeus_client():
-    key, secret = get_amadeus_keys()
+    key, secret = config.get_amadeus_keys()
     return amadeus_Client(
         hostname='production',  # TODO - add switch for nonprod
         client_id=key,
@@ -151,9 +153,9 @@ def _get_amadeus_client():
 
 
 def _get_flight_prefs(resort_name):
-    airlines = get_airlines_pref()
-    origin_airport = get_origin_airport()
-    resort_airport, nonstop_only = get_resort_airport_prefs(resort_name)
+    airlines = config.get_airlines_pref()
+    origin_airport = config.get_origin_airport()
+    resort_airport, nonstop_only = config.get_resort_airport_prefs(resort_name)
     cli = _get_amadeus_client()
     return {
         'nonstop': nonstop_only,

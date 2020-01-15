@@ -1,8 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QSizePolicy
 from PyQt5.QtCore import Qt, pyqtSignal
-from src.resources.OuterLayer import BottomBar, CentralBar
-from src.resources.BaseContainers import BaseMainWindow
-from src.backend.config import get_height
+from src.resources.outer_layer import BottomBar, CentralBar
+from src.resources.base_containers import BaseMainWindow
 from src.backend.scrolling_resort_list import ResortMasterList
 from time import time
 
@@ -36,9 +35,9 @@ class MainWindow(BaseMainWindow):
     def paintUI(self, resort: str):
         main_info = CentralBar(parent=self, resort=resort)
         main_info.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        main_info.setFixedHeight(int(get_height() * 0.95))
+        main_info.setFixedHeight(int(self.config.get_height() * 0.95))
         scroll_bar = BottomBar(parent=self)
-        scroll_bar.setFixedHeight(int(get_height() * 0.05))
+        scroll_bar.setFixedHeight(int(self.config.get_height() * 0.05))
         self.layout.addWidget(main_info, alignment=Qt.AlignVCenter)
         self.layout.addWidget(scroll_bar, alignment=Qt.AlignBottom)
         self._set_timer()

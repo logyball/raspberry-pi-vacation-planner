@@ -1,0 +1,16 @@
+os: linux
+arch:
+  - amd64
+  # - arm64 TODO - figure out how to conditionalize this on pi_branch
+
+language: python
+python:
+  - "3.6"
+  - "3.7"
+  - "3.8"
+
+install:
+  - pip3 install -r requirements.txt
+
+script:
+  - python3 -m unittest

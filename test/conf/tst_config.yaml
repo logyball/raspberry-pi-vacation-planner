@@ -1,0 +1,19 @@
+db_path: 'test_db.db'
+base_weather_url: 'https://api.weather.gov/points/'
+screen_size:
+  height: 960
+  width: 1600
+resorts:
+  steamboat:
+    name: 'Steamboat Springs'
+    latitude: '667'
+    longitude: '-667'
+    airport: HDN
+    nonstop: ''
+    stream: 'test_url'
+  killington:
+    name: 'Killington'
+    latitude: '666'
+    longitude: '-666'
+    driving: True
+    stream: 'test_url2'

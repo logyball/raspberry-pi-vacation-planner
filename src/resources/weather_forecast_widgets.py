@@ -1,8 +1,7 @@
 from PyQt5.QtWidgets import QLabel, QWidget, QFrame
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
-from src.backend.config import get_width, get_height
-from src.resources.BaseContainers import BaseVContainer, BaseHContainer
+from src.resources.base_containers import BaseVContainer, BaseHContainer
 from src.backend.styling import load_stylesheet
 
 
@@ -39,12 +38,12 @@ class WeatherTableRow(BaseHContainer):
 
     def initUI(self, dayInfo: dict):
         self.date = QLabel(dayInfo.get("date"))
-        self.date.setFixedWidth(int(get_width() * 0.05))
+        self.date.setFixedWidth(int(self.config.get_width() * 0.05))
         self.icon = TableIcon(parent=self, weather_icon_path=dayInfo.get("icon"))
-        self.icon.setFixedWidth(int(get_width() * 0.03))
+        self.icon.setFixedWidth(int(self.config.get_width() * 0.03))
         self.icon.setIcon()
         self.forecast = QLabel(dayInfo.get("forecast"))
-        self.forecast.setFixedWidth(int(get_width() * 0.2))
+        self.forecast.setFixedWidth(int(self.config.get_width() * 0.2))
         self.forecast.setWordWrap(True)
         self.layout.addWidget(self.date, alignment=Qt.AlignHCenter)
         self.layout.addWidget(self.forecast, alignment=Qt.AlignHCenter)
@@ -71,7 +70,7 @@ class WeatherForecastTable(BaseVContainer):
         self.rows = []
         amount_of_days = len(forecast)
         self.header = QLabel(str(amount_of_days) + " Day Forecast")
-        self.header.setFixedHeight(int(get_height() * 0.03))
+        self.header.setFixedHeight(int(self.config.get_height() * 0.03))
         self.layout.addWidget(self.header, alignment=Qt.AlignTop)
 
     def _build_table(self, forecast):
@@ -81,7 +80,7 @@ class WeatherForecastTable(BaseVContainer):
             )
         for row in self.rows:
             self.layout.addWidget(row, alignment=Qt.AlignTop)
-            row.setFixedHeight(int(get_height() * 0.065))
+            row.setFixedHeight(int(self.config.get_height() * 0.065))
 
     def _set_style(self):
         self.header.setObjectName('weatherTableHeader')
