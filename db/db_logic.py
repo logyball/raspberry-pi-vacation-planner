@@ -1,16 +1,21 @@
 import sqlite3
-from datetime import datetime
-from pprint import pprint
-
+from datetime import datetime, timedelta
 from helpers.config import get_resort_driving, get_list_of_resorts
 from db.db_hardcoded_sql import *
 from helpers.travel import get_driving_to_resort_data_from_api, get_flying_to_resort_data_from_api
 from helpers.weather import get_weather_info_from_api
 
+
 def _get_cur_date_hour():
     cur_dt = datetime.now()
     cur_dt_str = cur_dt.strftime("%Y-%m-%d")
     cur_hr = cur_dt.hour
+    if cur_hr > 17:
+        cur_hr = 17
+    elif cur_hr < 6:
+        cur_hr = 17
+        yesterday = cur_dt - timedelta(1)
+        cur_dt_str = yesterday.strftime("%Y-%m-%d")
     return cur_dt_str, cur_hr
 
 
