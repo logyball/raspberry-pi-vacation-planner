@@ -1,13 +1,15 @@
 from yaml import load, FullLoader
 from functools import lru_cache
-from os import environ
+from os import sep
 
 
 class ConfigFunctions(object):
-    conf_file_path: str = 'config.yaml'
-    secrets_file_path: str = 'secrets.yaml'
+    conf_file_path: str = None
+    secrets_file_path: str = None
 
-    def __init__(self):
+    def __init__(self, test_environ: bool = False):
+        self.conf_file_path = 'test' + sep + 'conf' + sep + 'tst_config.yaml' if test_environ else 'config.yaml'
+        self.secrets_file_path = 'test' + sep + 'conf' + sep + 'tst_secrets.yaml' if test_environ else 'secrets.yaml'
         pass
 
     def get_maps_key(self):
