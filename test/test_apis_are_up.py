@@ -17,6 +17,7 @@ class TestApisAreUp(unittest.TestCase):
         try:
             cls.config_fn._get_secrets()
         except FileNotFoundError as e:
+            print(e)
             secrets_yaml = yaml.load(f"""
             keys:
               amadeus_key: {environ.get('TEST_AMADEUS_KEY')}
