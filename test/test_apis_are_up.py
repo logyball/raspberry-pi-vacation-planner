@@ -28,8 +28,6 @@ class TestApisAreUp(unittest.TestCase):
             with open('secrets.yaml', 'w') as f:
                 f.write(yaml.dump(secrets_yaml))
                 cls.wrote_new_file = True
-        with open('secrets.yaml', 'r') as f:
-            print(f.read())
 
 
     @classmethod
@@ -60,11 +58,14 @@ class TestApisAreUp(unittest.TestCase):
     def test_flight_api(self):
         two_wks = datetime.now() + timedelta(14)
         two_wks_str = two_wks.strftime("%Y-%m-%d")
-        amadeus_cli = amadeus.Client(
-            hostname='' if self.wrote_new_file else 'production',
-            client_id=self.config_fn.get_amadeus_keys()[0],
-            client_secret=self.config_fn.get_amadeus_keys()[1],
-        )
+        if self.wrote_new_file:
+            amadeus_cli = amadeus.Client(
+                client_id=self.config_fn.get_amadeus_keys()[0],
+                client_secret=self.config_fn.get_amadeus_keys()[1],
+            )
+        else:
+            print('dont test locally!')
+            return
         res = amadeus_cli.shopping.flight_offers.get(
             origin='MAD',
             destination='NYC',
