@@ -1,4 +1,9 @@
-anguage: python
+os: linux
+arch:
+  - amd64
+  - arm64
+
+language: python
 python:
   - "3.6"
   - "3.7"
