@@ -85,7 +85,7 @@ class BaseWeatherDb(BaseDb):
         super(BaseWeatherDb, self).__init__(source=source)
 
     def _check_weather_is_current(self, resort: str):
-        query_params = _check_currentness_query_params(resort)
+        query_params = _check_currentness_query_params(resort, request_from='weather')
         self.cursor.execute(check_weather_resort_current, query_params)
         return self._check_currentness_result()
 
@@ -142,12 +142,12 @@ class BaseTravelDb(BaseDb):
         super(BaseTravelDb, self).__init__(source=source)
 
     def _check_driving_is_current(self, resort: str):
-        query_params = _check_currentness_query_params(resort)
+        query_params = _check_currentness_query_params(resort, request_from='driving')
         self.cursor.execute(check_driving_resort_current, query_params)
         return self._check_currentness_result()
 
     def _check_flying_is_current(self, resort: str):
-        query_params = _check_currentness_query_params(resort)
+        query_params = _check_currentness_query_params(resort, request_from='flying')
         self.cursor.execute(check_flying_resort_current, query_params)
         return self._check_currentness_result()
 
