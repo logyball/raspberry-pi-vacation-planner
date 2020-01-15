@@ -1,15 +1,17 @@
 from yaml import load, FullLoader
 from functools import lru_cache
-from os import sep
+from os import sep, getcwd
 
 
 class ConfigFunctions(object):
     conf_file_path: str = None
     secrets_file_path: str = None
+    cwd: str = None
 
     def __init__(self, test_environ: bool = False):
-        self.conf_file_path = 'test' + sep + 'conf' + sep + 'tst_config.yaml' if test_environ else 'config.yaml'
-        self.secrets_file_path = 'test' + sep + 'conf' + sep + 'tst_secrets.yaml' if test_environ else 'secrets.yaml'
+        self.cwd = getcwd()
+        self.conf_file_path = self.cwd + sep + 'test' + sep + 'conf' + sep + 'tst_config.yaml' if test_environ else self.cwd + sep + 'config.yaml'
+        self.secrets_file_path = self.cwd + sep + 'test' + sep + 'conf' + sep + 'tst_secrets.yaml' if test_environ else self.cwd + sep + 'secrets.yaml'
         pass
 
     def get_maps_key(self):
@@ -53,10 +55,6 @@ class ConfigFunctions(object):
     def get_height(self):
         return self._get_config().get('screen_size', {}).get('height', 800)
 
-    def _get_individual_resort(self, resort_name: str):
-        resorts = self._get_resorts()
-        return resorts.get(resort_name, {})
-
     def get_list_of_resorts(self):
         return list(self._get_resorts().keys())
 
@@ -70,6 +68,10 @@ class ConfigFunctions(object):
     def get_resort_proper_name(self, resort_name: str):
         resort = self._get_individual_resort(resort_name)
         return resort.get('name')
+
+    def _get_individual_resort(self, resort_name: str):
+        resorts = self._get_resorts()
+        return resorts.get(resort_name, {})
 
     @lru_cache(maxsize=4)
     def _get_resorts(self):
