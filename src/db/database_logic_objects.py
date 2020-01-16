@@ -14,6 +14,8 @@ class DbHelpers(object):
         cur_dt = datetime.now()
         cur_dt_str = cur_dt.strftime("%Y-%m-%d")
         cur_hr = cur_dt.hour
+        # TODO - figure out a better way to not check overnight
+        # for flights
         if request_from == 'flying':
             if cur_hr > 14:
                 cur_hr = 14

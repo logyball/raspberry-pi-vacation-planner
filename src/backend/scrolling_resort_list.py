@@ -7,8 +7,8 @@ class ResortMasterList(object):
     cur_index: int = 0
     num_resorts: int = 0
 
-    def __init__(self):
-        self.conf = ConfigFunctions()
+    def __init__(self, test_environ: bool = False):
+        self.conf = ConfigFunctions(test_environ=test_environ)
         self.resorts = self.conf.get_list_of_resorts()
         self.num_resorts = len(self.resorts)
 
